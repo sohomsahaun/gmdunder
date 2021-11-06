@@ -1,5 +1,7 @@
-function DunderExceptionBadType() : DunderException() constructor {
-	// For when type checks fail
-	__bases_add__(DunderExceptionBadType);
-	static __human_readable_name = "Bad Variable Type";
+function DunderExceptionStopIteration() : DunderException() constructor {
+	// Used for stopping iteration, not really an exception!
+	__bases_add__(DunderExceptionStopIteration);
+	static __human_readable_name = "Stop Iteration";
+	
+	static __init__ = function() {}
 }

@@ -1,7 +1,7 @@
 function Dunder() constructor {
 	
 	// ******
-	// ****** Creation functions
+	// ****** Creation
 	// ******
 	
 	static init = function(_type, _values) {
@@ -9,30 +9,30 @@ function Dunder() constructor {
 		if (is_numeric(_type) and script_exists(_type)) {
 			var _struct = new _type()
 			
-			if (not variable_struct_exists(_struct, "__init__")) {
+			if (not is_struct_with_method(_struct, "__init__")) {
 				throw init(DunderExceptionNoMethod, "Struct "+instanceof(_struct)+" does not have an __init__ method");
 			}
 			
 			// we're doing this pyramid of doom because gamemaker has no string_execute_ext for methods
 			switch(argument_count) {
 				case  1: _struct.__init__(); break;
-				case  2: _struct.__init__(argument[1]); break;
-				case  3: _struct.__init__(argument[1], argument[2]); break;
-				case  4: _struct.__init__(argument[1], argument[2], argument[3]); break;
-				case  5: _struct.__init__(argument[1], argument[2], argument[3], argument[4]); break;
-				case  6: _struct.__init__(argument[1], argument[2], argument[3], argument[4], argument[5]); break;
-				case  7: _struct.__init__(argument[1], argument[2], argument[3], argument[4], argument[5], argument[6]); break;
-				case  8: _struct.__init__(argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7]); break;
-				case  9: _struct.__init__(argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8]); break;
-				case 10: _struct.__init__(argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9]); break;
-				case 11: _struct.__init__(argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10]); break;
-				case 12: _struct.__init__(argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11]); break;
-				case 13: _struct.__init__(argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11], argument[12]); break;
-				case 14: _struct.__init__(argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11], argument[12], argument[13]); break;
-				case 15: _struct.__init__(argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11], argument[12], argument[13], argument[14]); break;
-				case 16: _struct.__init__(argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11], argument[12], argument[13], argument[14], argument[15]); break;
-				case 17: _struct.__init__(argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11], argument[12], argument[13], argument[14], argument[15], argument[16]); break;
-				default: throw init(DunderException, "Init can't accept more than 16 extra arguments");
+				case  2: _struct.__init__(_values); break;
+				case  3: _struct.__init__(_values, argument[2]); break;
+				case  4: _struct.__init__(_values, argument[2], argument[3]); break;
+				case  5: _struct.__init__(_values, argument[2], argument[3], argument[4]); break;
+				case  6: _struct.__init__(_values, argument[2], argument[3], argument[4], argument[5]); break;
+				case  7: _struct.__init__(_values, argument[2], argument[3], argument[4], argument[5], argument[6]); break;
+				case  8: _struct.__init__(_values, argument[2], argument[3], argument[4], argument[5], argument[6], argument[7]); break;
+				case  9: _struct.__init__(_values, argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8]); break;
+				case 10: _struct.__init__(_values, argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9]); break;
+				case 11: _struct.__init__(_values, argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10]); break;
+				case 12: _struct.__init__(_values, argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11]); break;
+				case 13: _struct.__init__(_values, argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11], argument[12]); break;
+				case 14: _struct.__init__(_values, argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11], argument[12], argument[13]); break;
+				case 15: _struct.__init__(_values, argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11], argument[12], argument[13], argument[14]); break;
+				case 16: _struct.__init__(_values, argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11], argument[12], argument[13], argument[14], argument[15]); break;
+				case 17: _struct.__init__(_values, argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11], argument[12], argument[13], argument[14], argument[15], argument[16]); break;
+				default: throw init(DunderExceptionBadArgument, "Init can't accept more than 16 extra arguments");
 			}
 			
 			return _struct;
@@ -41,6 +41,21 @@ function Dunder() constructor {
 			throw init(DunderExceptionResourceNotFound, "Could not find dunder struct constructor "+string(_type));
 		}
 	}
+	
+	static del = function(_struct) {
+		__throw_if_not_struct_with_method(_struct, "__del__");
+		_struct.__del__();
+		delete _struct;
+	}
+	
+	static clone = function(_struct) {
+		__throw_if_not_struct_with_method(_struct, "__clone__");
+		return _struct.__clone__();
+	}
+	
+	// ******
+	// ****** Convenience functions for constructing specific dunder structs
+	// ******
 	
 	static instance = function(_object, _xx=0, _yy=0, _depth=0, _layer=undefined, _values={}) {
 		// Calls DunderInstance to wrap an object
@@ -74,32 +89,177 @@ function Dunder() constructor {
 		return init(DunderExceptionRuntimeError, _err);
 	}
 	
-	static del = function(_struct) {
-		__throw_if_not_struct_with_method(_struct, "__del__");
-		
-		var _result = _struct.__del__();
-		if (is_exception(_result)) return _result;
-		delete _struct;
+	static init_string  = function(_value) {
+			// we're doing this pyramid of doom because gamemaker has no string_execute_ext for methods
+			switch(argument_count) {
+				case  1: return init(DunderString, _value);
+				case  2: return init(DunderString, _value, argument[1]);
+				case  3: return init(DunderString, _value, argument[1], argument[2]);
+				case  4: return init(DunderString, _value, argument[1], argument[2], argument[3]);
+				case  5: return init(DunderString, _value, argument[1], argument[2], argument[3], argument[4]);
+				case  6: return init(DunderString, _value, argument[1], argument[2], argument[3], argument[4], argument[5]);
+				case  7: return init(DunderString, _value, argument[1], argument[2], argument[3], argument[4], argument[5], argument[6]);
+				case  8: return init(DunderString, _value, argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7]);
+				case  9: return init(DunderString, _value, argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8]);
+				case 10: return init(DunderString, _value, argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9]);
+				case 11: return init(DunderString, _value, argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10]);
+				case 12: return init(DunderString, _value, argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11]);
+				case 13: return init(DunderString, _value, argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11], argument[12]);
+				case 14: return init(DunderString, _value, argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11], argument[12], argument[13]);
+				case 15: return init(DunderString, _value, argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11], argument[12], argument[13], argument[14]);
+				case 16: return init(DunderString, _value, argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11], argument[12], argument[13], argument[14], argument[15]);
+				default: throw init(DunderExceptionBadArgument, "Init can't accept more than 16 arguments");
+			}
+	}
+	
+	
+	static init_dict = function(_values, _copy=false) {
+		return init(DunderDict, _values, _copy);
 	}
 	
 	// ******
-	// ****** Type checking functions
+	// ****** Representation and conversion to GML types
+	// ******
+		
+	static repr = function(_struct) {
+		if (is_struct_with_method(_struct, "__repr__")) {
+			return _struct.__repr__();
+		}
+		return json_stringify(_struct);
+	}
+	
+	static as_str = function(_struct) {
+		if (is_struct_with_method(_struct, "__str__")) {
+			return _struct.__str__();
+		}
+		return string(_struct);
+	}
+	
+	static as_bool = function(_struct) {
+		if (is_struct_with_method(_struct, "__bool__")) {
+			return _struct_.__bool__();
+		}
+		return bool(_struct);
+	}
+	
+	// ******
+	// ****** Mathematical functions
+	// ******
+	
+	static add = function(_struct_a, _struct_b) {
+		if (is_struct_with_method(_struct_a, "__add__")) {
+			return _struct_a.__add__(_struct_b);	
+		}
+		if (is_struct_with_method(_struct_b, "__add__")) {
+			return _struct_b.__add__(_struct_a);
+		}
+		throw init(DunderExceptionNoMethod, "Neither arguments have an __add__ method");
+	}
+	
+	static mul = function(_struct_a, _struct_b) {
+		if (is_struct_with_method(_struct_a, "__mul__")) {
+			return _struct_a.__mul__(_struct_b);	
+		}
+		if (is_struct_with_method(_struct_b, "__mul__")) {
+			return _struct_b.__mul__(_struct_a);
+		}
+		throw init(DunderExceptionNoMethod, "Neither arguments have an __mul__ method");
+	}
+	
+	// ******
+	// ****** Structure access
+	// ******
+	
+	static len = function(_struct) {
+		__throw_if_not_struct_with_method(_struct, "__len__");
+		return _struct.__len__();
+	}
+	static in = function(_struct, _value) {
+		__throw_if_not_struct_with_method(_struct, "__contains__");
+		return _struct.__contains__(_value);
+	}
+	static get = function(_struct, _index_or_key) {
+		if (is_struct_with_method(_struct, "__getitem__")) {
+			return _struct.__getitem__(_index_or_key);	
+		}
+		if (is_struct_with_method(_struct, "__getattr__")) {
+			return _struct.__getattr__(_index_or_key);
+		}
+		throw init(DunderExceptionNoMethod, "Struct "+instanceof(_struct)+" does not have a __getitem__ or __getattr__ method");
+	}
+	static set = function(_struct, _index_or_key, _value) {
+		if (is_struct_with_method(_struct, "__setitem__")) {
+			return _struct.__setitem__(_index_or_key, _value);	
+		}
+		if (is_struct_with_method(_struct, "__setattr__")) {
+			return _struct.__setattr__(_index_or_key, _value);
+		}
+		throw init(DunderExceptionNoMethod, "Struct "+instanceof(_struct)+" does not have a __setitem__ or __setattr__ method");
+	}
+	static has = function(_struct, _index_or_key) {
+		if (is_struct_with_method(_struct, "__hasitem__")) {
+			return _struct.__hasitem__(_index_or_key);	
+		}
+		if (is_struct_with_method(_struct, "__hasattr__")) {
+			return _struct.__hasattr__(_index_or_key);
+		}
+		throw init(DunderExceptionNoMethod, "Struct "+instanceof(_struct)+" does not have a __hasitem__ or __hasattr__ method");
+	}
+	
+	// ******
+	// ****** Iteration
+	// ******
+	
+	static iter = function(_struct) {
+		__throw_if_not_struct_with_method(_struct, "__iter__");
+		return _struct.__iter__();
+	}
+	
+	static next = function(_iterator) {
+		__throw_if_not_struct_with_method(_iterator, "__next__");
+		return _iterator.__next__();
+	}
+	
+	static foreach = function(_struct, _func) {
+		var _iter = iter(_struct);
+		while(true) {
+			try {
+				var _value = next(_iter);
+			}
+			catch (_err) {
+				if (is_type(_err, DunderExceptionStopIteration)) {
+					delete _iter;
+					return;
+				}
+				throw exception(_err)
+			}
+			if (is_array(_value)) {
+				_func(_value[0], _value[1]);
+			}
+			else {
+				_func(_value);
+			}
+		}
+	}
+	
+	// ******
+	// ****** Type checking
 	// ******
 	
 	static is_subtype = function(_struct, _type) {
-		if (not is_struct(_struct) or not variable_struct_exists(_struct, "__is_subtype__")) {
+		if (not is_struct_with_method(_struct, "__is_subtype__")) {
 			return false;
 		}
 		
-		return _struct.__is_subtype__(_constructor);
+		return _struct.__is_subtype__(_type);
 	}
 	
-	static is_constructor = function(_struct, _type) {
-		if (not is_struct(_struct) or not variable_struct_exists(_struct, "__is_type__")) {
+	static is_type = function(_struct, _type) {
+		if (not is_struct_with_method(_struct, "__is_type__")) {
 			return false;
 		}
 		
-		return _struct.__is_type__(_constructor);
+		return _struct.__is_type__(_type);
 	}
 	
 	static is_exception = function(_struct) {
@@ -111,60 +271,18 @@ function Dunder() constructor {
 	}
 	
 	static is_same_type = function(_struct_a, _struct_b) {
-		if (is_struct(_struct_a) and variable_struct_exists(_struct_a, "__is_same_type_as__")) {
+		if (is_struct_with_method(_struct_a, "__is_same_type_as__")) {
 			return _struct_a.__is_same_type_as__(_struct_b);	
 		}
-		if (is_struct(_struct_b) and variable_struct_exists(_struct_b, "__is_same_type_as__")) {
+		if (is_struct_with_method(_struct_b, "__is_same_type_as__")) {
 			return _struct_b.__is_same_type_as__(_struct_a);
 		}
 		return false;
 	}
 	
-	
-	// ******
-	// ****** Type coersion functions
-	// ******
-	
-	static str = function(_struct) {
-		if (is_string(_struct)) {
-			return _struct;
-		}
-		if (is_struct(_struct_a) and variable_struct_exists(_struct_a, "__str__")) {
-			return _struct.__str__();
-		}
-		return string(_struct);
+	static is_struct_with_method = function(_struct, _method) {
+		return is_struct(_struct) and variable_struct_exists(_struct, _method)
 	}
-	
-	static repr = function(_struct) {
-		__throw_if_not_struct_with_method(_struct, "__repr__");
-
-		return _struct.__repr__();
-	}
-	
-	// ******
-	// ****** Mathematical functions
-	// ******
-	
-	static add = function(_struct_a, _struct_b) {
-		if (is_struct(_struct_a) and variable_struct_exists(_struct_a, "__add__")) {
-			return _struct_a.__add__(_struct_b);	
-		}
-		if (is_struct(_struct_b) and variable_struct_exists(_struct_b, "__add__")) {
-			return _struct_b.__add__(_struct_a);
-		}
-		throw init(DunderExceptionNoMethod, "Neither arguments have an __add__ method");
-	}
-	
-	static mul = function(_struct_a, _struct_b) {
-		if (is_struct(_struct_a) and variable_struct_exists(_struct_a, "__mul__")) {
-			return _struct_a.__mul__(_struct_b);	
-		}
-		if (is_struct(_struct_b) and variable_struct_exists(_struct_b, "__mul__")) {
-			return _struct_b.__mul__(_struct_a);
-		}
-		throw init(DunderExceptionNoMethod, "Neither arguments have an __mul__ method");
-	}
-	
 	
 	// ******
 	// ****** Dunder-specific utilities
@@ -179,9 +297,6 @@ function Dunder() constructor {
 		}
 	}
 	
-	static __is_struct_with_method = function(_struct, _method) {
-		return is_struct(_struct) and variable_struct_exists(_struct, _method)
-	}
 
 	// ******
 	// ****** Exception handling
