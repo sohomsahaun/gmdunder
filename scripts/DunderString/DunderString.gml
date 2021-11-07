@@ -64,6 +64,8 @@ function DunderString() : DunderBaseStruct() constructor {
 		__dunder__.__throw_if_not_struct_with_method(_other, "__str__");
 		return value == _other.__str__();
 	}
+	static __radd__ = __add__;
+	static __rmul__ = __mul__;
 	static add = __add__;
 	static mul = __mul__;
 	static eq = __eq__;

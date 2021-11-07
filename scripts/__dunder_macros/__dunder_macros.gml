@@ -24,6 +24,7 @@ if (DUNDER_REGISTER_GLOBALS) {
 	
 	globalvar add;add = method(_dunder, _dunder.add);
 	globalvar mul;mul = method(_dunder, _dunder.mul);
+	globalvar div_;div_ = method(_dunder, _dunder.div_);
 	globalvar eq;eq = method(_dunder, _dunder.eq);
 	
 	globalvar len;len = method(_dunder, _dunder.len);

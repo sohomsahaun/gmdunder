@@ -21,7 +21,7 @@ function DunderBaseStruct() constructor {
 		for (var _i=0; _i<_len; _i++) {
 			var _key = _keys[_i];
 			if (_key != "__bases__") {
-				_clone[$ _key] = self[$ _key];	
+				_clone[$ _key] = self[$ _key];
 			}
 		}
 		return _clone;
@@ -37,11 +37,20 @@ function DunderBaseStruct() constructor {
 	static __bool__ = function() {
 		return bool(true);
 	}
+	// static __number__ = function()
 	// static __dict__ = function()
+	// static __array__ = function()
+	
 	
 	// Mathematical methods
 	//static __add__ = function(_other)
+	//static __radd__ = function(_other)
+	//static __sub__ = function(_other)
+	//static __rsub__ = function(_other)
 	//static __mul__ = function(_other)
+	//static __rmul__ = function(_other)
+	//static __div__ = function(_other)
+	//static __rdiv__ = function(_other)
 	//static __eq__ = function(_other);
 	
 	// Structure methods

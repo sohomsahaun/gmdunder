@@ -6,7 +6,7 @@
     "path": "folders/Dunder/Extensions.yy",
   },
   "resourceVersion": "1.0",
-  "name": "DunderDataStruct",
+  "name": "DunderRng",
   "tags": [],
   "resourceType": "GMScript",
 }

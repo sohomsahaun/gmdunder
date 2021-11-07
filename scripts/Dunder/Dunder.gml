@@ -183,20 +183,40 @@ function Dunder() constructor {
 		if (is_struct_with_method(_struct_a, "__add__")) {
 			return _struct_a.__add__(_struct_b);	
 		}
-		if (is_struct_with_method(_struct_b, "__add__")) {
-			return _struct_b.__add__(_struct_a);
+		if (is_struct_with_method(_struct_b, "__radd__")) {
+			return _struct_b.__radd__(_struct_a);
 		}
-		throw init(DunderExceptionNoMethod, "Neither arguments have an __add__ method");
+		throw init(DunderExceptionNoMethod, "Arguments don't have needed __add__ or __radd__ methods");
+	}
+	
+	static sub = function(_struct_a, _struct_b) {
+		if (is_struct_with_method(_struct_a, "__sub__")) {
+			return _struct_a.__sub__(_struct_b);	
+		}
+		if (is_struct_with_method(_struct_b, "__rsub__")) {
+			return _struct_b.__rsub__(_struct_a);
+		}
+		throw init(DunderExceptionNoMethod, "Arguments don't have needed __sub__ or __rsub__ methods");
 	}
 	
 	static mul = function(_struct_a, _struct_b) {
 		if (is_struct_with_method(_struct_a, "__mul__")) {
 			return _struct_a.__mul__(_struct_b);	
 		}
-		if (is_struct_with_method(_struct_b, "__mul__")) {
-			return _struct_b.__mul__(_struct_a);
+		if (is_struct_with_method(_struct_b, "__rmul__")) {
+			return _struct_b.__rmul__(_struct_a);
 		}
-		throw init(DunderExceptionNoMethod, "Neither arguments have an __mul__ method");
+		throw init(DunderExceptionNoMethod, "Arguments don't have needed __mul__ or __rmul__ methods");
+	}
+		
+	static div_ = function(_struct_a, _struct_b) {
+		if (is_struct_with_method(_struct_a, "__div__")) {
+			return _struct_a.__div__(_struct_b);	
+		}
+		if (is_struct_with_method(_struct_b, "__rdiv__")) {
+			return _struct_b.__rdiv__(_struct_a);
+		}
+		throw init(DunderExceptionNoMethod, "Arguments don't have needed __div__ or __rdiv__ methods");
 	}
 	
 	static eq = function(_struct_a, _struct_b) {

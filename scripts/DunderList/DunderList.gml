@@ -79,6 +79,8 @@ function DunderList() : DunderBaseStruct() constructor {
 		}
 		return array_equals(values, _input);
 	}
+	static __radd__ = __add__;
+	static __rmul__ = __mul__;
 	static add = __add__;
 	static mul = __mul__;
 	static eq = __eq__;
