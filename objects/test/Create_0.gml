@@ -1,7 +1,11 @@
-b = init_dict({a: 1, b: 2, c: 3, d: 4});
+b = init_list([1, 3, 999, 3, 53 ,13, 2]);
 
-foreach(b, function(_key, _value) {
-	show_debug_message(_key)	
-	show_debug_message(_value)	
-})
+show_message(b);
+b.reverse();
+show_message(b);
 
+
+
+//b = init_string("hello world");
+//remove(b, 4);
+//show_message(b);

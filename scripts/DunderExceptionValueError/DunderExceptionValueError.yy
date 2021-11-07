@@ -2,11 +2,11 @@
   "isDnD": false,
   "isCompatibility": false,
   "parent": {
-    "name": "Data Structures",
-    "path": "folders/Data Structures.yy",
+    "name": "Exceptions",
+    "path": "folders/Dunder/Exceptions.yy",
   },
   "resourceVersion": "1.0",
-  "name": "array_find_by_value",
+  "name": "DunderExceptionValueError",
   "tags": [],
   "resourceType": "GMScript",
 }

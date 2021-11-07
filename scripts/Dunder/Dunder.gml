@@ -112,9 +112,12 @@ function Dunder() constructor {
 			}
 	}
 	
-	
 	static init_dict = function(_values, _copy=false) {
 		return init(DunderDict, _values, _copy);
+	}
+	
+	static init_list = function(_values, _copy=false) {
+		return init(DunderList, _values, _copy);
 	}
 	
 	// ******
@@ -137,9 +140,29 @@ function Dunder() constructor {
 	
 	static as_bool = function(_struct) {
 		if (is_struct_with_method(_struct, "__bool__")) {
-			return _struct_.__bool__();
+			return _struct.__bool__();
 		}
 		return bool(_struct);
+	}
+	
+	static as_struct = function(_struct) {
+		if (is_struct_with_method(_struct, "__struct__")) {
+			return _struct.__struct__();
+		}
+		if (is_struct(_struct)) {
+			return _struct;
+		}
+		throw init(DunderExceptionTypeError, "Can't coerse type "+typeof(_struct)+" to struct");
+	}
+	
+	static as_array = function(_struct) {
+		if (is_struct_with_method(_struct, "__array__")) {
+			return _struct.__array__();
+		}
+		if (is_array(_struct)) {
+			return _struct;
+		}
+		throw init(DunderExceptionTypeError, "Can't coerse type "+typeof(_struct)+" to array");
 	}
 	
 	// ******
@@ -166,6 +189,16 @@ function Dunder() constructor {
 		throw init(DunderExceptionNoMethod, "Neither arguments have an __mul__ method");
 	}
 	
+	static eq = function(_struct_a, _struct_b) {
+		if (is_struct_with_method(_struct_a, "__eq__")) {
+			return _struct_a.__eq__(_struct_b);	
+		}
+		if (is_struct_with_method(_struct_b, "__eq__")) {
+			return _struct_b.__eq__(_struct_a);
+		}
+		throw init(DunderExceptionNoMethod, "Neither arguments have an __eq__ method");
+	}
+	
 	// ******
 	// ****** Structure access
 	// ******
@@ -174,7 +207,7 @@ function Dunder() constructor {
 		__throw_if_not_struct_with_method(_struct, "__len__");
 		return _struct.__len__();
 	}
-	static in = function(_struct, _value) {
+	static contains = function(_struct, _value) {
 		__throw_if_not_struct_with_method(_struct, "__contains__");
 		return _struct.__contains__(_value);
 	}
@@ -205,6 +238,15 @@ function Dunder() constructor {
 		}
 		throw init(DunderExceptionNoMethod, "Struct "+instanceof(_struct)+" does not have a __hasitem__ or __hasattr__ method");
 	}
+	static remove = function(_struct, _index_or_key) {
+		if (is_struct_with_method(_struct, "__removeitem__")) {
+			return _struct.__removeitem__(_index_or_key);	
+		}
+		if (is_struct_with_method(_struct, "__removeattr__")) {
+			return _struct.__removeattr__(_index_or_key);
+		}
+		throw init(DunderExceptionNoMethod, "Struct "+instanceof(_struct)+" does not have a __removeitem__ or __removeattr__ method");
+	}
 	
 	// ******
 	// ****** Iteration
@@ -221,10 +263,13 @@ function Dunder() constructor {
 	}
 	
 	static foreach = function(_struct, _func) {
-		var _iter = iter(_struct);
+		__throw_if_not_struct_with_method(_struct, "__iter__");
+		var _iter = _struct.__iter__();
+		__throw_if_not_struct_with_method(_iter, "__next__");
+		
 		while(true) {
 			try {
-				var _value = next(_iter);
+				var _pair = _iter.__next__();
 			}
 			catch (_err) {
 				if (is_type(_err, DunderExceptionStopIteration)) {
@@ -233,14 +278,30 @@ function Dunder() constructor {
 				}
 				throw exception(_err)
 			}
-			if (is_array(_value)) {
-				_func(_value[0], _value[1]);
-			}
-			else {
-				_func(_value);
-			}
+			
+			_func(_pair[0], _pair[1]);
 		}
 	}
+	
+	
+	//__map__ = function(_func) {
+	//	var _len = array_length(__values);
+	//	var _array = array_create(_len);
+	//	for (var _i=0; _i<_len; _i++) {
+	//		__array[_i] = _func(_i, __values[_i]);
+	//	};
+	//}
+	//__filter__ = function(_func) {
+	//	var _len = array_length(__values);
+	//	var _array = array_create(_len);
+	//	for (var _i=0; _i<_len; _i++) {
+	//		if (_func(__values[_i])) {
+	//			array_push(_array, __values[_i]);
+	//		}
+	//	};
+	//	return _array;
+	//}
+	
 	
 	// ******
 	// ****** Type checking

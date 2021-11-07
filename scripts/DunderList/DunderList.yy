@@ -6,7 +6,7 @@
     "path": "folders/Dunder.yy",
   },
   "resourceVersion": "1.0",
-  "name": "DunderIteratorDict",
+  "name": "DunderList",
   "tags": [],
   "resourceType": "GMScript",
 }

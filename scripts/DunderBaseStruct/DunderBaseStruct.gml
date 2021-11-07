@@ -37,10 +37,12 @@ function DunderBaseStruct() constructor {
 	static __bool__ = function() {
 		return bool(true);
 	}
+	// static __dict__ = function()
 	
 	// Mathematical methods
 	//static __add__ = function(_other)
 	//static __mul__ = function(_other)
+	//static __eq__ = function(_other);
 	
 	// Structure methods
 	//static __len__ = function()
@@ -48,9 +50,11 @@ function DunderBaseStruct() constructor {
 	//static __getitem__ = function(_index)
 	//static __setitem__ = function(_index, _value)
 	//static __hasitem__ = function(_index)
+	//static __removeitem__ = function(_index)
 	//static __getattr__ = function(_key)
 	//static __setattr__ = function(_key, _value)
 	//static __hasattr__ = function(_key)
+	//static __removeattr__ = function(_key)
 	
 	// Iteration methods
 	// static __iter__ = function()
