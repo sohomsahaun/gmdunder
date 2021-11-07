@@ -1,6 +1,6 @@
-b = init(DunderUlid)
-
-show_message(is_type(b, DunderUlid));
-c = init(DunderUlid, b)
-show_message(is_type(b, DunderUlid));
-show_message(eq(b, c));
+d = init(DunderPath, "D:\\Dropbox\\Mantissa\\dunder");
+show_message(d.is_dir());
+show_message(d.up());
+show_message(d.get_parent());
+d.join("abc")
+show_message(d)

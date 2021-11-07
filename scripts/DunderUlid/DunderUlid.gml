@@ -147,7 +147,6 @@ function DunderUlid() : DunderBaseStruct() constructor {
 		}
 		return _value;
 	}
-	
 	static get_timestamp = function() {
 		return values[2]/1000;	
 	}

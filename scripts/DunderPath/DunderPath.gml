@@ -1,99 +1,133 @@
-//function Path(_string_path = undefined) constructor {
-//	__dirs = []
+function DunderPath() : DunderBaseStruct() constructor {
+	// A path manager
+	__bases_add__(DunderPath);
 	
-//	has_path = function() {
-//		return array_length(__dirs) > 0;	
-//	}
+	static separator = "/";
 	
-//	exists = function() {
-//		return is_file() or is_dir();
-//	}
+	static __init__ = function(_input) {
+		if (__dunder__.is_struct_with_method(_input, "__array__")) {
+			var _array = _input.__array__();
+			var _len = array_length(_array);
+			path_parts = array_create(_len);
+			array_copy(path_parts, 0, _array, 0, _len);
+		}
+		else if (is_array(_input)) {
+			var _len = array_length(_input);
+			path_parts = array_create(_len);
+			array_copy(path_parts, 0, _input, 0, _len);
+		}
+		else if (__dunder__.is_struct_with_method(_input, "__str__")) {
+			path_parts = [];
+			join(_input.__str__());
+		}
+		else if (is_string(_input)) {
+			path_parts = [];
+			join(_input);
+		}
+		else if (__dunder__.is_dunder_struct(_input)) {
+			throw __dunder__.init(DunderExceptionTypeError, "Can't coerse type "+instanceof(_input)+" to Path");
+		}
+		else if (is_undefined(_input)) {
+			path_parts = []
+		}
+	}
+	static __clone__ = function(_input) {
+		if (is_undefined(_input)) {
+			_input = path_parts;
+		}
+		return __dunder__.init(self.__type__(), _input);
+	}
+	// Representation methods
+	static __str__ = function() {
+		var _str = "";
+		var _len = array_length(path_parts);
+		for (var _i=0; _i<_len; _i+=1) {
+			if (_i == 0) {
+				_str += path_parts[_i];	
+			}
+			else {
+				_str += separator + path_parts[_i];
+			}
+		}
+		return _str;
+	}
+	static __repr__ = function() {
+		return "<dunder '"+instanceof(self)+" value='"+__str__()+"'>";
+	}
+	static __bool__ = function() {
+		return array_length(path_parts) > 0;	
+	}
+	static __array__ = function() {
+		return path_parts;	
+	}
+	static toString = function() {
+		return __str__();	
+	}
 	
-//	is_file = function() {
-//		if (has_path()) {
-//			return file_exists(to_string());
-//		}
-//		return false;
-//	}
-	
-//	is_dir = function() {
-//		if (has_path()) {
-//			return directory_exists(to_string());
-//		}
-//		return false;
-//	}
-	
-//	get_directory_array = function() {
-//		return __dirs;
-//	}
-	
-//	from_string = function(_string) {
-//		__dirs = [];
-//		var _fn = string_replace_all(_string, "\\", "/");
-	
-//		do {
-//			// slashes
-//			var _pos = string_pos("/", _fn);
-//			if (_pos > 0) {
-//				array_push(__dirs, string_copy(_fn, 1, _pos-1));
-//				_fn = string_delete(_fn, 1, _pos);
-//			} else {
-//				array_push(__dirs, _fn);
-//				_fn = "";
-//			}
-//		} until (string_length(_fn) == 0);
+	// Path functions
+	static join = function(_string) {
+		_string = string_replace_all(_string, "\\", separator);
+		_string = string_replace_all(_string, "/", separator);
+
+		var _len = string_length(_string);
+		var _last_pos = 1;
+		do {
+			// slashes
+			var _pos = string_pos_ext(separator, _string, _last_pos);
+			if (_pos == 0) {
+				_pos = _len+1;
+			}
+			array_push(path_parts, string_copy(_string, _last_pos, _pos-_last_pos));
+			_last_pos = _pos+1;
+		} until (_last_pos >= _len);
 		
-//		return self;
-//	}
+		return self;
+	}
+	exists = function() {
+		return is_file() or is_dir();
+	}
 	
-//	to_string = function(_separator = "/") {
-//		var _str = "";
-//		var _len = array_length(__dirs);
-//		for (var _i=0; _i<_len; _i++) {
-//			_str += __dirs[_i];
-//			if (_i < _len-1) {
-//				_str += _separator;
-//			}
-//		}
-//		return _str;
-//	}
+	is_file = function() {
+		if (__bool__()) {
+			return file_exists(__str__());
+		}
+		return false;
+	}
 	
-//	get_parent = function() {
-//		// return new Path with parent
-//		if (array_length(__dirs) == 0) {
-//			throw "Cannot go up"
-//		}
+	is_dir = function() {
+		if (__bool__()) {
+			return directory_exists(__str__());
+		}
+		return false;
+	}
+	
+	get_parent = function() {
+		// return new Path with parent
+		var _len_up = array_length(path_parts) - 1;
 		
-//		var _parent = new Path();
-//		array_copy(_parent.__dirs, 0, __dirs, 0, array_length(__dirs) - 1);
-//		return _parent;
-//	}
-	
-//	get_joined = function(_name) {
-//		// return new Path with child
-//		var _joined = new Path();
-//		array_copy(_joined.__dirs, 0, __dirs, 0, array_length(__dirs));
-//		return _joined.join(_name);
-//	}
-	
-//	join = function(_name) {
-//		// join in place
-//		array_push(__dirs, _name);
-//		return self;
-//	}
-	
-//	up = function() {
-//		// go up one, in place
-//		if (array_length(__dirs) == 0) {
-//			throw "Cannot go up"
-//		}
+		if (_len_up < 0) {
+			throw __dunder__.init(DunderExceptionValueError, "Can't go up in path");
+		}
 		
-//		array_pop(__dirs);
-//		return self;
-//	}
-	
-//	// initialize
-//	if (not is_undefined(_string_path)) {
-//		from_string(_string_path);
-//	}
-//}
+		var _array = array_create(_len_up);
+		array_copy(_array, 0, path_parts, 0, _len_up);
+		return __clone__(_array);
+	}
+		
+	get_joined = function(_name) {
+		// return new Path with child
+		var _child = __clone__()
+		_child.join(_name);
+		return _child;
+	}
+
+	up = function() {
+		// go up one, in place
+		if (array_length(path_parts) == 0) {
+			throw "Cannot go up"
+		}
+		
+		array_pop(path_parts);
+		return self;
+	}
+}
