@@ -112,7 +112,7 @@ function DunderList() : DunderBaseStruct() constructor {
 		if (_index <= -_len or _index >= _len) {
 			throw __dunder__.init(DunderExceptionIndexError, "Index "+string(_index)+" out of range (0-"+string(_len-1)+")");
 		}
-		_index = (_index % _len + _len) % _len;
+		_index = __wrap_index(_index);
 		return array_get(values, _index);
 	}
 	static __setitem__ = function(_index, _value) {
@@ -120,7 +120,7 @@ function DunderList() : DunderBaseStruct() constructor {
 		if (_index < -_len or _index > _len) {
 			throw __dunder__.init(DunderExceptionIndexError, "Index "+string(_index)+" out of range (0-"+string(_len-1)+")");
 		}
-		_index = (_index % _len + _len) % _len;
+		_index = __wrap_index(_index);
 		array_set(values, _index, _value);
 	}
 	static __hasitem__ = function(_index) {
@@ -128,7 +128,7 @@ function DunderList() : DunderBaseStruct() constructor {
 		if (_len == 0) {
 			return false;
 		}
-		_index = (_index % _len + _len) % _len;
+		_index = __wrap_index(_index);
 		return _index >= 0 and _index < _len;
 	}
 	static __removeitem__ = function(_index) {
@@ -220,5 +220,16 @@ function DunderList() : DunderBaseStruct() constructor {
 			values[@ _i] = values[_j];
 			values[@ _j] = _left;
 		}
+	}
+	static slice = function(_start=0, _stop=undefined, _step=1) {
+		_start = _start ?? 0;
+		_stop = _stop ?? array_length(values);
+		var _range = __dunder__.init(DunderRange, _start, _stop, _step);
+		return __dunder__.map(_range, method(self, __getitem__));
+	}
+	
+	static __wrap_index = function(_index) {
+		var _len = array_length(values);
+		return (_index % _len + _len) % _len;
 	}
 }

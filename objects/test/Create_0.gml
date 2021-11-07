@@ -20,6 +20,6 @@
 //	show_debug_message(_value);	
 //});
 
-data = init(TestDatastruct, {abc: 3});
+b = init_list([1, 3, 5 ,9 ,11, 12, 13, 99, 444, 5555]);
 
-show_message(data)
+show_message(b.slice(0, 10, 2))

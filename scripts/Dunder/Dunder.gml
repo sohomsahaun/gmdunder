@@ -309,6 +309,7 @@ function Dunder() constructor {
 		while(true) {
 			try {
 				var _pair = _iter.__next__();
+				show_debug_message(_pair);
 			}
 			catch (_err) {
 				if (is_type(_err, DunderExceptionStopIteration)) {
