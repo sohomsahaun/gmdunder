@@ -3,21 +3,32 @@ function DunderRange() : DunderBaseStruct() constructor {
 	__bases_add__(DunderRange);
 	
 	static __init__ = function(_start=0, _stop=undefined, _step=1) {
+		if (not is_numeric(_start)) {
+			throw __dunder__.init(DunderExceptionValueError, "Start must be numeric");	
+		}
+		if (not is_numeric(_stop)) {
+			throw __dunder__.init(DunderExceptionValueError, "Stop must be numeric");	
+		}
+		if (not is_numeric(_step)) {
+			throw __dunder__.init(DunderExceptionValueError, "Step must be numeric");	
+		}
+		
+		if (_stop == 0) {
+			throw __dunder__.init(DunderExceptionValueError, "Step can't be zero");	
+		}
+		if (sign(_stop-_start) != sign(_step)) {
+			throw __dunder__.init(DunderExceptionValueError, "Start and stop value doesn't match step");	
+		}
+		
 		start = _start;
 		stop = _stop;
 		step = _step;
-		
-		if (step == 0) {
-			throw __dunder__.init(DunderExceptionValueError, "Step can't be zero");	
-		}
-		if (sign(stop-start) != sign(step)) {
-			throw __dunder__.init(DunderExceptionValueError, "Start and stop value doesn't match step");	
-		}
 	}
+	
+	// Representation methods
 	static __repr__ = function() {
 		return "<dunder '"+instanceof(self)+" start="+string(start)+" stop="+string(stop)+" step="+string(step)+">";
 	}
-	
 	static __array__ = function() {
 		var _len = __len__();
 		var _array = array_create(_len);
@@ -27,15 +38,16 @@ function DunderRange() : DunderBaseStruct() constructor {
 		return _array;
 	}
 	
-	static __iter__ = function() {
-		return __dunder__.init(DunderIterator, method(self, __getitem__), __len__());
-	}
-	
+	// Structure methods
 	static __len__ = function() {
 		return ceil((stop - start)/step);
 	}
-	
 	static __getitem__ = function(_index) {
 		return start + _index*step;
+	}
+	
+	// Iteration methods
+	static __iter__ = function() {
+		return __dunder__.init(DunderIterator, method(self, __getitem__), __len__());
 	}
 }

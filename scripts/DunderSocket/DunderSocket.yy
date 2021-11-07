@@ -3,7 +3,7 @@
   "isCompatibility": false,
   "parent": {
     "name": "Todo",
-    "path": "folders/Todo.yy",
+    "path": "folders/Dunder/Todo.yy",
   },
   "resourceVersion": "1.0",
   "name": "DunderSocket",

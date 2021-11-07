@@ -3,40 +3,40 @@ function DunderIterator() : DunderBaseStruct() constructor {
 	__bases_add__(DunderIterator);
 	
 	static __init__ = function(_getter, _keys_or_len) {
-		if (__dunder__.is_struct_with_method(_keys_or_len, "__array__")) {
-			keys = _keys_or_len.__array__();
-			max_index = _keys_or_len.__len__();
-			advance = advance_key;
+		if (__dunder__.can_array(_keys_or_len)) {
+			__keys = __dunder__.as_array(_keys_or_len);
+			__max_index = array_length(__keys);
+			__advance = __advance_key;
 		}
-		else if (is_array(_keys_or_len)) {
-			keys = _keys_or_len
-			max_index = array_length(keys);
-			advance = advance_key;
+		else if (is_numeric(_keys_or_len)) {
+			__max_index = _keys_or_len;
+			__advance = __advance_index;
 		}
 		else {
-			max_index = _keys_or_len;
-			advance = advance_index;
+			throw __dunder__.init(DunderExceptionTypeError, "Can't use "+instanceof(_keys_or_len)+" for keys or length");
 		}
 		
-		getter = _getter;
+		__getter = _getter;
 		index = 0;
 	}
 	
+	// Iteration methods
 	static __next__ = function() {
-		if (index >= max_index) {
+		if (index >= __max_index) {
 			throw __dunder__.init(DunderExceptionStopIteration);
 		}
 		
-		var _index_or_key = advance();
-		var _value = getter(_index_or_key);
+		var _index_or_key = __advance();
+		var _value = __getter(_index_or_key);
 		return [_value, _index_or_key];
 	}
 	
-	static advance_key = function() {
-		return keys[index++];
+	// Iterator methods
+	static __advance_key = function() {
+		return __keys[index++];
 	}
 	
-	static advance_index = function() {
+	static __advance_index = function() {
 		return index++;
 	}
 }

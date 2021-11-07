@@ -1,127 +1,103 @@
-//function Env() constructor {
-//	// environment loader
-//	loaded_envs = {}
+function DunderEnv() : DunderDict() constructor {
+	// Manages environmental variables
+	__bases_add__(DunderEnv);
 	
-//	get_env = function(_name, _default="") {
-//		if (variable_struct_exists(loaded_envs, _name)) {
-//			return loaded_envs[$ _name];	
-//		}
-//		var _retval = environment_get_variable(_name);
-//		if (_retval == "") {
-//			return _default;	
-//		}
-//		return _retval
-//	}
-	
-//	get_number = function(_name, _default=0) {
-//		var _retval = get_env(_name);
-//		if (_retval == "") {
-//			return _default;	
-//		}
-//		return real(_retval);
-//	}
-	
-//	get_bool = function(_name, _default=false) {
-//		var _retval = get_env(_name);
-//		if (_retval == "") {
-//			return _default;	
-//		}
-//		return string_lower(_retval)== "true";
-//	}
-	
-//	get_json = function(_name, _default={}) {
-//		var _retval = get_env(_name);
-//		if (_retval == "") {
-//			return _default;
-//		}
-//		return json_parse(_retval);
-//	}
-	
-//	get_path = function(_name, _default="") {
-//		var _retval = get_env(_name, _default);
-//		return new Path(_retval);
-//	}
-	
-//	load_env = function(_env_file) {
-//		// Loads a .env file
+	static __init__ = function() {
+		// Initialize: try to load local dotenv
+		values = {}
 		
-//		var _fp = file_text_open_read(_env_file);
-//		if (_fp < 0) {
-//			show_debug_message("Env: Could not read env file " + _env_file);
-//			return;
-//		}
+	    var _project_dir = __get_project_dir();
+	    if (_project_dir.is_dir()) {
+			load_env_from_file(_project_dir.join(".env"));
+	    }
+	}
+
+	// Env functions
+	static load_env_from_file = function(_input) {
+		var _path = __dunder__.as_string(_input);
+		if (not file_exists(_path)) {
+			throw __dunder__.init(DunderExceptionFileError, "Can't load file "+_path);
+		}
 		
-//		while(not file_text_eof(_fp)) {
-//			var _line = file_text_readln(_fp);
-//			var _pos = string_pos("=", _line);
-//			if (_pos > 0) {
-//				var _env_name = __trim(string_copy(_line, 1, _pos-1));
-//				var _env_value = __rtrim(string_delete(_line, 1, _pos));
-//				show_debug_message("Env: Loaded " + _env_name + "=" + _env_value);
-//				loaded_envs[$ _env_name] = _env_value;
-//			}
-//		}
-//		file_text_close(_fp);
-//	}
-
-//    get_project_dir = function() {
-//        var _build_win = parameter_string(2);
-//    	if (parameter_count() == 3 and parameter_string(1) == "-game" and _build_win != "") {
-//    		// find path of the build.bff file
-//    		var _path = new Path(_build_win).up().up();
-//    		var _build = _path.join("build.bff");
-//    		if (not _build.is_file()) {
-//    			show_debug_message("ENV: could not find build.bff");
-//    			return new NullPath();
-//    		}
+		var _file = __dunder__.init(DunderFile, _path);
+		foreach(_file, method(self, function(_line) {
+			var _parts = _line.split("=", 1);
+			if (array_length(_parts) == 2) {
+				var _key_string = __dunder__.init(DunderString, _parts[0])
+				var _value_string = __dunder__.init(DunderString, _parts[1]);
+				
+				var _key = _key_string.trim()
+				var _value = _value_string.rtrim()
+				
+				show_debug_message("Env: Loaded " + _key + "=" + _value);
+				self.set(_key, _value)
+				
+				delete _key_string;
+				delete _value_string;
+			}
+		}));
+	}
 	
-//    		// get project dir
-//    		var _struct = json_parse_from_file(_build.to_string());
-//    		var _project_dir = new Path(_struct[$ "projectDir"]);
-//    		if (_project_dir.is_dir()) {
-//                return _project_dir;
-//    		}
-//    	}
+    static __get_project_dir = function() {
+		// hack to try to get project directory
+        var _build_win = parameter_string(2);
+    	if (parameter_count() == 3 and parameter_string(1) == "-game" and _build_win != "") {
+    		// find path of the build.bff file
+    		var _path = __dunder__.init(DunderPath, _build_win).up().up();
+    		var _build = _path.join("build.bff");
+    		if (_build.is_file()) {
+	    		var _struct = __dunder__.init(DunderDict).from_file(_build);
+	    		var _project_dir = __dunder__.init(DunderPath, _struct.get("projectDir", ""));
+	    		if (_project_dir.is_dir()) {
+	                return _project_dir;
+	    		}
+    		}
+			else {
+    			show_debug_message("ENV: could not find build.bff");
+			}	
+    	}
 
-//        return new NullPath();
-//    }
-    
-//    get_project_dir_as_string = function() {
-//        return get_project_dir().to_string();
-//    }
-
-//	__is_whitespace = function(_char) {
-//		return _char == " " or _char == "\t" or _char == "\r" or _char == "\n";
-//	}
-
-//	__ltrim = function(_string) {
-//		var _len = string_length(_string);
-//		for (var _i=0; _i<_len; _i++) {
-//			if (not __is_whitespace(string_char_at(_string, _i+1))) {
-//				break;
-//			}
-//		}
-//		return string_delete(_string, 1, _i);
-//	};
+    	return __dunder__.init(DunderPath);
+    }
 	
-//	__rtrim = function(_string) {
-//		var _len = string_length(_string);
-//		for (var _i=_len-1; _i>=0; _i--) {
-//			if (not __is_whitespace(string_char_at(_string, _i+1))) {
-//				break;
-//			}
-//		}
-//		return string_copy(_string, 1, _i+1);
-//	}
 	
-//	__trim = function(_string) {
-//		return __rtrim(__ltrim(_string));
-//	}
+	static get_env = function(_name, _default="") {
+		if (has(_name)) {
+			return get(_name);
+		}
+		var _retval = environment_get_variable(_name);
+		if (_retval == "") {
+			return _default;	
+		}
+		return _retval
+	}
 	
-//	// Initialize: try to load local dotenv
-//    var _project_dir = get_project_dir();
-//    if (_project_dir.is_dir()) {
-//        var _dotenv_filename = _project_dir.join(".env").to_string();
-//		load_env(_dotenv_filename);
-//    }
-//}
+	static get_number = function(_name, _default=0) {
+		var _retval = get_env(_name);
+		if (_retval == "") {
+			return _default;	
+		}
+		return real(_retval);
+	}
+	
+	static get_boolean = function(_name, _default=false) {
+		var _retval = get_env(_name);
+		if (_retval == "") {
+			return _default;	
+		}
+		return string_lower(_retval)== "true";
+	}
+	
+	static get_json = function(_name, _default=undefined) {
+		var _retval = get_env(_name);
+		if (_retval == "") {
+			return _default;
+		}
+		return json_parse(_retval);
+	}
+	
+	static get_path = function(_name, _default="") {
+		var _retval = get_env(_name, _default);
+		return __dunder__.init(DunderPath, _retval);
+	}
+}

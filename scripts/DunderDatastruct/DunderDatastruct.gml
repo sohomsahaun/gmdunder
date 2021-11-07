@@ -14,6 +14,7 @@ function DunderDataStruct() : DunderBaseStruct() constructor {
 			if (variable_struct_exists(_values, _key)) {
 				var _value = _values[$ _key];
 				if (_field.validate(_value)) {
+					delete _self[$ _key];
 					self[$ _key] = _value;
 				}
 				else {
@@ -25,6 +26,7 @@ function DunderDataStruct() : DunderBaseStruct() constructor {
 					throw __dunder__.init(DunderExceptionValueError, "Field "+string(_key)+" required but not provided");	
 				}
 				else {
+					delete _self[$ _key];
 					self[$ _key] = _field.generate_default();
 				}			
 			}

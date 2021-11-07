@@ -17,10 +17,16 @@ if (DUNDER_REGISTER_GLOBALS) {
 	globalvar init_list;init_list = method(_dunder, _dunder.init_list);
 	
 	globalvar repr;repr = method(_dunder, _dunder.repr);
-	globalvar as_str;as_str = method(_dunder, _dunder.as_str);
-	globalvar as_bool;as_bool = method(_dunder, _dunder.as_bool);
+	globalvar as_string;as_string = method(_dunder, _dunder.as_string);
+	globalvar as_boolean;as_boolean = method(_dunder, _dunder.as_boolean);
+	globalvar as_number;as_number = method(_dunder, _dunder.as_number);
 	globalvar as_struct;as_struct = method(_dunder, _dunder.as_struct);
 	globalvar as_array;as_array = method(_dunder, _dunder.as_array);
+	globalvar can_string;can_string = method(_dunder, _dunder.can_string);
+	globalvar can_boolean;can_boolean = method(_dunder, _dunder.can_boolean);
+	globalvar can_number;can_number = method(_dunder, _dunder.can_number);
+	globalvar can_struct;can_struct = method(_dunder, _dunder.can_struct);
+	globalvar can_array;can_array = method(_dunder, _dunder.can_array);
 	
 	globalvar add;add = method(_dunder, _dunder.add);
 	globalvar mul;mul = method(_dunder, _dunder.mul);

@@ -3,14 +3,8 @@ function DunderNumber() : DunderBaseStruct() constructor {
 	__bases_add__(DunderNumber);
 	
 	static __init__ = function(_input) {
-		if (__dunder__.is_struct_with_method(_input, "__number__")) {
-			value = _input.__number__();
-		}
-		else if (__dunder__.is_dunder_struct(_input)) {
-			throw __dunder__.init(DunderExceptionTypeError, "Can't coerse type "+instanceof(_input)+" to number");
-		}
-		else if (is_numeric(_input)) {
-			value = _input;
+		if (__dunder__.can_number(_input)) {
+			value = __dunder__.as_number(_input);
 		}
 		else {
 			throw __dunder__.init(DunderExceptionTypeError, "Can't coerse type "+typeof(_input)+" to dict");
@@ -18,23 +12,23 @@ function DunderNumber() : DunderBaseStruct() constructor {
 	}	
 	static __clone__ = function(_input) {
 		if (is_undefined(_input)) {
-			_input = value;
+			return __dunder__.init(self.__type__(), value);
 		}
 		return __dunder__.init(self.__type__(), _input);
 	}
 
 	// Representation methods
-	static __str__ = function() {
+	static __string__ = function() {
 		return string(value);
 	}
 	static __repr__ = function() {
-		return "<dunder '"+instanceof(self)+" value="+__str__()+">";
+		return "<dunder '"+instanceof(self)+" value="+__string__()+">";
 	}
-	static __bool__ = function() {
+	static __boolean__ = function() {
 		return bool(value);	
 	}
 	static __number__ = function() {
-		return value;	
+		return value;
 	}
 	static toString = function() {
 		return string(value);	
@@ -42,53 +36,34 @@ function DunderNumber() : DunderBaseStruct() constructor {
 	
 	// Mathematical operators
 	static __add__ = function(_other) {
-		if (is_numeric(_other)) {
-			return value + _other;	
-		}
-		__dunder__.__throw_if_not_struct_with_method(_other, "__number__");
-		return __clone__(value + _other.__number__());
+		var _number = __dunder__.as_number(_other)
+		return __clone__(value + _number);
 	}
 	static __sub__ = function(_other) {
-		if (is_numeric(_other)) {
-			return value - _other;	
-		}
-		__dunder__.__throw_if_not_struct_with_method(_other, "__number__");
-		return __clone__(value - _other.__number__());
+		var _number = __dunder__.as_number(_other);
+		return __clone__(value - _number);
 	}
 	static __rsub__ = function(_other) {
-		if (is_numeric(_other)) {
-			return _other - value;	
-		}
-		__dunder__.__throw_if_not_struct_with_method(_other, "__number__");
-		return __clone__(_other.__number__() - value);
+		var _number = __dunder__.as_number(_other)
+		return __clone__(_number - value);
 	}
 	static __mul__ = function(_other) {
-		if (is_numeric(_other)) {
-			return value * _other;
-		}
-		__dunder__.__throw_if_not_struct_with_method(_other, "__number__");
-		return __clone__(value * _other);
+		var _number = __dunder__.as_number(_other)
+		return __clone__(value * _number);
 	}
 	static __div__ = function(_other) {
-		if (is_numeric(_other)) {
-			return value / _other;
-		}
-		__dunder__.__throw_if_not_struct_with_method(_other, "__number__");
-		return __clone__(value / _other);
+		var _number = __dunder__.as_number(_other)
+		return __clone__(value / _number);
 	}
 	static __rdiv__ = function(_other) {
-		if (is_numeric(_other)) {
-			return _other / value;
-		}
-		__dunder__.__throw_if_not_struct_with_method(_other, "__number__");
-		return __clone__(_other / value);
+		var _number = __dunder__.as_number(_other)
+		return __clone__(_number / value);
 	}
 	static __eq__ = function(_other) {
-		if (is_numeric(_other)) {
-			return value == _other
+		if (not __dunder__.can_number(_other)) {
+			return false;
 		}
-		__dunder__.__throw_if_not_struct_with_method(_other, "__number__");
-		return value == _other.__number__();
+		return value == __dunder__.as_number(_other);
 	}
 	static __radd__ = __add__;
 	static __rmul__ = __mul__;

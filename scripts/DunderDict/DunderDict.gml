@@ -4,14 +4,8 @@ function DunderDict() : DunderBaseStruct() constructor {
 
 	// Initializer
 	static __init__ = function(_input, _copy=false) {
-		if (__dunder__.is_struct_with_method(_input, "__struct__")) {
-			var _incoming_struct = _input.__struct__();
-		}
-		else if (__dunder__.is_dunder_struct(_input)) {
-			throw __dunder__.init(DunderExceptionTypeError, "Can't coerse type "+instanceof(_input)+" to dict");
-		}
-		else if (is_struct(_input)) {
-			var _incoming_struct = _input;
+		if (__dunder__.can_struct(_input)) {
+			var _incoming_struct = __dunder__.as_struct(_input);
 		}
 		else if (is_undefined(_input)) {
 			var _incoming_struct = {};	
@@ -47,7 +41,7 @@ function DunderDict() : DunderBaseStruct() constructor {
 	}	
 	static __clone__ = function(_input) {
 		if (is_undefined(_input)) {
-			_input = __struct__();
+		return __dunder__.init(self.__type__(), __struct__(), true);
 		}
 		return __dunder__.init(self.__type__(), _input, true);
 	}
@@ -69,6 +63,17 @@ function DunderDict() : DunderBaseStruct() constructor {
 		}
 		return _array;
 	}
+	static __bool__ = function() {
+		return variable_struct_names_count(values) > 0;
+	}
+	
+	// Mathematical operators
+	static __add__ = function(_other) {
+		var _struct = __dunder__.as_struct(_other);
+		var _new_dict = __clone__();
+		_new_dict.update(_struct)
+		return _struct;
+	}
 	
 	// Structure methods
 	static __len__ = function() {
@@ -86,7 +91,7 @@ function DunderDict() : DunderBaseStruct() constructor {
 		if (variable_struct_exists(values, _key)) {
 			return variable_struct_get(values, _key);
 		}
-		if (argument_count>1) {
+		if (argument_count>1) { // default value
 			return argument[1];
 		}
 		return __dunder__.init(DunderExceptionKeyError);
@@ -138,5 +143,25 @@ function DunderDict() : DunderBaseStruct() constructor {
 			var _key = _keys[_i];
 			values[$ _key] = _other[$ _key];
 		}
+		return self;
+	}
+	static from_json = function(_input) {
+		var _string = __dunder__.as_string(_input);
+		var _struct = json_parse(_string);
+		values = _struct;
+		return self;
+	}
+	static from_file = function(_input) {
+		var _path = __dunder__.as_string(_input);
+		if (not file_exists(_path)) {
+			throw __dunder__.init(DunderExceptionFileError, "Can't load file "+typeof(_path));
+		}
+			
+		var _buff = buffer_load(_path);
+		var _string = buffer_read(_buff, buffer_text);
+		buffer_delete(_buff);
+		
+		values = json_parse(_string)
+		return self;
 	}
 }

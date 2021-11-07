@@ -6,8 +6,8 @@ function DunderString() : DunderBaseStruct() constructor {
 		value = "";
 		for (var _i=0; _i<argument_count; _i++) {
 			var _input = argument[_i];
-			if (__dunder__.is_struct_with_method(_input, "__str__")) {
-				value += _input.__str__();
+			if (__dunder__.is_struct_with_method(_input, "__string__")) {
+				value += _input.__string__();
 			}
 			else {
 				value += string(argument[_i]);
@@ -16,19 +16,19 @@ function DunderString() : DunderBaseStruct() constructor {
 	}	
 	static __clone__ = function(_input) {
 		if (is_undefined(_input)) {
-			_input = value;
+			return __dunder__.init(self.__type__(), values);
 		}
 		return __dunder__.init(self.__type__(), _input);
 	}
 
 	// Representation methods
-	static __str__ = function() {
+	static __string__ = function() {
 		return value;
 	}
 	static __repr__ = function() {
 		return "<dunder '"+instanceof(self)+" value='"+value+"'>";
 	}
-	static __bool__ = function() {
+	static __boolean__ = function() {
 		return bool(__len__() > 0);	
 	}
 	static __array__ = function() {
@@ -37,7 +37,6 @@ function DunderString() : DunderBaseStruct() constructor {
 		for (var _i=0; _i<_len; _i++) {
 			_array[_i] = string_char_at(value, _index+1);
 		}
-		
 	}
 	static toString = function() {
 		return value;	
@@ -45,25 +44,20 @@ function DunderString() : DunderBaseStruct() constructor {
 	
 	// Mathematical operators
 	static __add__ = function(_other) {
-		if (is_string(_other)) {
-			return value + _other;	
-		}
-		__dunder__.__throw_if_not_struct_with_method(_other, "__str__");
-		return __clone__(value + _other.__str__());
+		var _string = __dunder__.as_string(_other)
+		return __clone__(value + _string);
 	}
 	static __mul__ = function(_other) {
-		if (not is_numeric(_other)) {
-			throw __dunder__.init(DunderExceptionTypeError, "Expected numerical type");	
-		}
-		return __clone__(string_repeat(value, _other));
+		var _number = __dunder__.as_number(_other);
+		return __clone__(string_repeat(value, _number));
 	}
 	static __eq__ = function(_other) {
-		if (is_string(_other)) {
-			return value == _other;
+		if (not __dunder__.can_string(_other)) {
+			return false;
 		}
-		__dunder__.__throw_if_not_struct_with_method(_other, "__str__");
-		return value == _other.__str__();
+		return value == __dunder__.as_string(_other);
 	}
+	
 	static __radd__ = __add__;
 	static __rmul__ = __mul__;
 	static add = __add__;
@@ -85,7 +79,7 @@ function DunderString() : DunderBaseStruct() constructor {
 		if (_index <= -_len or _index >= _len) {
 			throw __dunder__.init(DunderExceptionIndexError, "Index "+string(_index)+" out of range (0-"+string(_len-1)+")");
 		}
-		_index = (_index % _len + _len) % _len;
+		_index = __wrap_index(_index);
 		return string_char_at(value, _index+1);
 	}
 	static __setitem__ = function(_index, _value) {
@@ -93,7 +87,7 @@ function DunderString() : DunderBaseStruct() constructor {
 		if (_index < -_len or _index > _len) {
 			throw __dunder__.init(DunderExceptionIndexError, "Index "+string(_index)+" out of range (0-"+string(_len-1)+")");
 		}
-		_index = (_index % _len + _len) % _len;
+		_index = __wrap_index(_index);
 		return string_insert(_value, value, _index+1);
 	}
 	static __hasitem__ = function(_index) {
@@ -101,7 +95,7 @@ function DunderString() : DunderBaseStruct() constructor {
 		if (_len == 0) {
 			return false;	
 		}
-		_index = (_index % _len + _len) % _len;
+		_index = __wrap_index(_index);
 		return _index >= 0 and _index < _len;
 	}
 	static __removeitem__ = function(_index) {
@@ -109,6 +103,7 @@ function DunderString() : DunderBaseStruct() constructor {
 		if (_index <= -_len or _index >= _len) {
 			throw __dunder__.init(DunderExceptionIndexError, "Index "+string(_index)+" out of range (0-"+string(_len-1)+")");
 		}
+		_index = __wrap_index(_index);
 		value = string_delete(value, _index+1, 1);
 	}
 	static len = __len__;
@@ -156,6 +151,97 @@ function DunderString() : DunderBaseStruct() constructor {
 	static upper = function() { return __clone__(string_upper(value)); }
 	
 	// String functions
+	static replace_all_in_place = function(_substr, _newstr) {
+		value = string_replace_all(value, _substr, _newstr);
+		return value
+	}
 	
+	static split = function(_seperator, _max_times=undefined) {
+		var _array = [];
+		var _len = string_length(value);
+		var _last_pos = 1;
+		var _separator_len = string_length(_seperator);
+		for (var _i=0; _last_pos < _len and (is_undefined(_max_times) or _i<_max_times); _i++) {
+			var _pos = string_pos_ext(_seperator, value, _last_pos);
+			if (_pos == 0) {
+				break;
+			}
+			array_push(_array, string_copy(value, _last_pos, _pos-_last_pos));	
+			_last_pos = _pos+_separator_len;
+		}
+		array_push(_array, string_copy(value, _last_pos, _len-_last_pos+1));	
+		return _array;
+	}
 	
+	static slice = function(_start=0, _stop=-1, _step=1) {
+		_start = __wrap_index(_start);
+		_stop = __wrap_index(_stop);
+		
+		if (not is_numeric(_start)) {
+			throw __dunder__.init(DunderExceptionValueError, "Start must be numeric");	
+		}
+		if (not is_numeric(_stop)) {
+			throw __dunder__.init(DunderExceptionValueError, "Stop must be numeric");	
+		}
+		if (not is_numeric(_step)) {
+			throw __dunder__.init(DunderExceptionValueError, "Step must be numeric");	
+		}
+
+		var _range = __dunder__.init(DunderRange, _start, _stop, _step);
+		return __dunder__.map(_range, method(self, __getitem__));
+	}
+	
+	static __wrap_index = function(_index) {
+		var _len = string_length(value);
+		return (_index % _len + _len) % _len;
+	}
+	
+	static __is_whitespace = function(_char) {
+		return _char == " " or _char == "\t" or _char == "\r" or _char == "\n";
+	}
+	
+	static trim = function() {
+		var _str = ltrim();
+		var _len = string_length(_str);
+		for (var _i=_len-1; _i>=0; _i--) {
+			if (not __is_whitespace(string_char_at(_str, _i+1))) {
+				break;
+			}
+		}
+		return string_copy(_str, 1, _i+1);
+	}
+	
+	static ltrim = function() {
+		var _len = string_length(value);
+		for (var _i=0; _i<_len; _i++) {
+			if (not __is_whitespace(string_char_at(value, _i+1))) {
+				break;
+			}
+		}
+		return string_delete(value, 1, _i);
+	}
+	
+	static rtrim = function() {
+		var _len = string_length(value);
+		for (var _i=_len-1; _i>=0; _i--) {
+			if (not __is_whitespace(string_char_at(value, _i+1))) {
+				break;
+			}
+		}
+		return string_copy(value, 1, _i+1);
+	}
+
+	static from_file = function(_input) {
+		var _path = __dunder__.as_string(_input);
+		if (not file_exists(_path)) {
+			throw __dunder__.init(DunderExceptionFileError, "Can't load file "+typeof(_path));
+		}
+			
+		var _buff = buffer_load(_path);
+		var _str = buffer_read(_buff, buffer_text);
+		buffer_delete(_buff);
+		
+		value = _str;
+		return self;
+	}
 }

@@ -1,17 +1,13 @@
 function DunderList() : DunderBaseStruct() constructor {
 	// A list wrapper
 	__bases_add__(DunderList);
+	
+	static __rng = __dunder__.init(DunderRng);
 
 	// Initializer
 	static __init__ = function(_input, _copy=false) {
-		if (__dunder__.is_struct_with_method(_input, "__array__")) {
-			var _incoming_list = _input.__array__();
-		}
-		else if (__dunder__.is_dunder_struct(_input)) {
-			throw __dunder__.init(DunderExceptionTypeError, "Can't coerse type "+instanceof(_input)+" to list");
-		}
-		else if (is_array(_input)) {
-			var _incoming_list = _input;
+		if (__dunder__.can_array(_input)) {
+			var _incoming_list = __dunder__.as_array(_input);
 		}
 		else if (is_undefined(_input)) {
 			var _incoming_list = [];
@@ -25,59 +21,43 @@ function DunderList() : DunderBaseStruct() constructor {
 			array_copy(values, 0, _incoming_list, 0, array_length(_incoming_list));
 		}
 		else {
-			values = _incoming_list;	
+			values = _incoming_list;
 		}
 	}	
 	static __clone__ = function(_input) {
 		if (is_undefined(_input)) {
-			_input = __array__();
+		return __dunder__.init(self.__type__(), __array__(), true);
 		}
 		return __dunder__.init(self.__type__(), _input, true);
 	}
 	
+	// Mathematical operators
 	static __add__ = function(_other) {
-		if (is_array(_other)) {
-			var _input = _other;
-		}
-		else if (__dunder__.is_struct_with_method(_input, "__array__")) {
-			var _input = _other.__array__();
-		}
-		else {
-			throw __dunder__.init(DunderExceptionTypeError, "Expected array type");	
-		}
+		var _array = __dunder__.as_array(_other)
+		var _other_len = array_length(_other);
 		
 		var _len = array_length(values);
-		var _input_len = array_length(_input);
-		var _array = array_create(_len + _input_len);
+		var _new_array = array_create(_len + _other_len);
 		array_copy(_array, 0, values, 0, _len);
-		array_copy(_array, _len, _input, 0, _input_len);
+		array_copy(_array, _len, _other, 0, _other_len);
 		
-		return __clone__(_array)
+		return __clone__(_new_array)
 	}
 	static __mul__ = function(_other) {
-		if (not is_numeric(_other) or _other < 0) {
-			throw __dunder__.init(DunderExceptionTypeError, "Expected numeric type");
-		}
-		
-		_other = ceil(_other);
+		var _number = ceil(__dunder__.as_number(_other));
+
 		var _len = array_length(values);
-		var _array = array_create(_other * _len);
-		for (var _i=0; _i<_other; _i++) {
-			array_copy(_array, _i*_len, values, 0, _len);
+		var _new_array = array_create(_number * _len);
+		for (var _i=0; _i<_number; _i++) {
+			array_copy(_new_array, _i*_len, values, 0, _len);
 		}
-		return __clone__(_array);
+		return __clone__(_new_array);
 	}
 	static __eq__ = function(_other) {
-		if (is_array(_other)) {
-			var _input = _other;	
+		if (not __dunder__.can_array(_other)) {
+			return false;	
 		}
-		else if (__dunder__.is_struct_with_method(_input, "__array__")) {
-			var _input = _other.__array__();
-		}
-		else {
-			throw __dunder__.init(DunderExceptionTypeError, "Expected array type");	
-		}
-		return array_equals(values, _input);
+		return array_equals(values, __dunder__.as_array(_other));
 	}
 	static __radd__ = __add__;
 	static __rmul__ = __mul__;
@@ -91,6 +71,9 @@ function DunderList() : DunderBaseStruct() constructor {
 	}
 	static __array__ = function() {
 		return values;
+	}
+	static __bool__ = function() {
+		return array_length(values) > 0;
 	}
 	
 	// Structure methods
@@ -138,6 +121,7 @@ function DunderList() : DunderBaseStruct() constructor {
 		if (_index <= -_len or _index >= _len) {
 			throw __dunder__.init(DunderExceptionIndexError, "Index "+string(_index)+" out of range (0-"+string(_len-1)+")");
 		}
+		_index = __wrap_index(_index);
 		array_delete(values, _index+1, 1);
 	}
 	static len = __len__;
@@ -182,16 +166,8 @@ function DunderList() : DunderBaseStruct() constructor {
 		return _count;
 	}
 	static extend = function(_other) {
-		if (__dunder__.is_struct_with_method(_other, "__array__")) {
-			var _input = _other.__array__()
-		}
-		else if (is_array(_other)) {
-			var _input = _other; 
-		}
-		else {
-			throw __dunder__.init(DunderExceptionTypeError, "Expected numerical type");	
-		}
-		array_copy(values, array_length(values), _input, 0, array_length(_input));
+		var _array = __dunder__.as_array(_other)
+		array_copy(values, array_length(values), _array, 0, array_length(_array));
 	}
 	static index = function(_value) {
 		var _len = array_length(values);
@@ -217,17 +193,43 @@ function DunderList() : DunderBaseStruct() constructor {
 	static shuffle = function() {
 		var _len = array_length(values);
 		for (var _i=0; _i<_len; _i++) {
-			var _j = irandom_range(_i, _len-1);
+			var _j = __rng.rand_int(_i, _len-1);
 			var _left = values[_i];
 			values[@ _i] = values[_j];
 			values[@ _j] = _left;
 		}
 	}
-	static slice = function(_start=0, _stop=undefined, _step=1) {
-		_start = _start ?? 0;
-		_stop = _stop ?? array_length(values);
+	static slice = function(_start=0, _stop=-1, _step=1) {
+		_start = __wrap_index(_start);
+		_stop = __wrap_index(_stop);
+		
+		if (not is_numeric(_start)) {
+			throw __dunder__.init(DunderExceptionValueError, "Start must be numeric");	
+		}
+		if (not is_numeric(_stop)) {
+			throw __dunder__.init(DunderExceptionValueError, "Stop must be numeric");	
+		}
+		if (not is_numeric(_step)) {
+			throw __dunder__.init(DunderExceptionValueError, "Step must be numeric");	
+		}
+
 		var _range = __dunder__.init(DunderRange, _start, _stop, _step);
-		return __dunder__.map(_range, method(self, __getitem__));
+		var _result = __dunder__.map(_range, method(self, __getitem__));
+		delete _range;
+		return _result;
+	}
+	static join = function(_separator=",") {
+		var _str = "";
+		var _len = array_length(values);
+		for (var _i=0; _i<_len; _i+=1) {
+			if (_i == 0) {
+				_str += values[_i];	
+			}
+			else {
+				_str += _separator + values[_i];
+			}
+		}
+		return _str;	
 	}
 	
 	static __wrap_index = function(_index) {

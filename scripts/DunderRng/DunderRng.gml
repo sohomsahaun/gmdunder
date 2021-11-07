@@ -2,43 +2,41 @@ function DunderRng() : DunderBaseStruct() constructor {
 	// An LGC-based RNG. Current params are based on rand48
 	__bases_add__(DunderRange);
 	
-	static __init__ = function(_seed=undefined, _multiplier=25214903917, _increment=11, _mask=0x7fffffff, _modulus=0x100000000) {
+	static __init__ = function(_seed=undefined, _multiplier=25214903917, _increment=11, _modulus=0x1000000000000, _shift=16, _mask=0xffffffff) {
 		
 		multiplier = _multiplier;
 		increment = _increment
-		mask = _mask;
 		modulus = _modulus;
+		shift = _shift
+		mask = _mask;
 		
 		if (is_numeric(_seed)) {
-			state = (_seed & mask) % modulus;
+			state = _seed % modulus;
 		}
 		else {
-			state = ((date_current_datetime() * 86400000) & mask) % modulus;
+			state = (date_current_datetime() * 86400000) % modulus;
 		}
-		
 	}
 	
+	// RNG functions
 	static set_state = function(_state) {
 		state = _state;
 		return self;
 	}
-	
 	static get_state = function() {
 		return state;	
 	}
-	
 	static rand_raw = function() {
 		state = (state * multiplier + increment) % modulus;
-		return state;
+		return (state >> shift) & mask;
 	}
-	
 	static rand_int = function(_a, _b=0) {
 		var _max = max(floor(_a), floor(_b));
 		var _min = min(ceil(_a), ceil(_b));
 		
-		var _range = _max - _min;
+		var _range = _max - _min + 1;
 		
-		if (_range <= 0) {
+		if (_range <= 1) {
 			throw init(DunderExceptionValueError, "Invalid range values");
 		}
 		if (_range > modulus) {
@@ -47,7 +45,6 @@ function DunderRng() : DunderBaseStruct() constructor {
 		
 		return _min + (rand_raw() % _range);
 	}
-	
 	static rand_range = function(_a, _b=0) {
 		var _max = max(_a, _b);
 		var _min = min(_a, _b);

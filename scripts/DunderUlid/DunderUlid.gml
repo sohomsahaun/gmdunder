@@ -14,29 +14,27 @@ function DunderUlid() : DunderBaseStruct() constructor {
 		static __rand80_low40 = 0;
 		static __rand80_high40 = 0;
 	
-		if (__dunder__.is_type(_input, DunderUlid)) {
-			values = array_create(3);
-			array_copy(values, 0, _input.values, 0, 3);
-		}
-		else if (is_array(_input)) {
-			var _len = array_length(_input);
+		if (__dunder__.can_array(_input)) {
+			var _array = __dunder__.as_array(_input);
+			var _len = array_length(_array);
 			if (_len < 3) {
 				throw __dunder__.init(DunderExceptionValueError, "Can't coerse array to Ulid, not enough values");
 			}
 			
-			if (_input[0] < 0 or _input[0] > 0xffffffff or
-				_input[1] < 0 or _input[1] > 0xffffffff or
-				_input[2] < 0 or _input[2] > 0xffffffffff) {
+			if (_array[0] < 0 or _array[0] > 0xffffffff or
+				_array[1] < 0 or _array[1] > 0xffffffff or
+				_array[2] < 0 or _array[2] > 0xffffffffff) {
 				throw __dunder__.init(DunderExceptionValueError, "Can't coerse array to Ulid, format incorrect");
 			}
 			values = _input;
 		}
-		else if (is_string(_input)) {
-			if (string_length(_input) == 26) {
+		else if (__dunder__.can_string(_input)) {
+			var _string = __dunder__.as_string(_input);
+			if (string_length(_string) == 26) {
 				values = [
-					__convert_crockford_base32_to_int(string_copy(_input, 19, 8)),
-					__convert_crockford_base32_to_int(string_copy(_input, 11, 8)),
-					__convert_crockford_base32_to_int(string_copy(_input, 1, 10)),
+					__convert_crockford_base32_to_int(string_copy(_string, 19, 8)),
+					__convert_crockford_base32_to_int(string_copy(_string, 11, 8)),
+					__convert_crockford_base32_to_int(string_copy(_string, 1, 10)),
 				];
 			}
 			// TODO: support UUID
@@ -90,28 +88,27 @@ function DunderUlid() : DunderBaseStruct() constructor {
 	}
 	
 	// Representation methods
-	static __str__ = function() {
+	static __string__ = function() {
 		return __convert_int_to_crockford_base32(values[2], 10) +
 				__convert_int_to_crockford_base32(values[1], 8) +
 				__convert_int_to_crockford_base32(values[0], 8);
 	}
 	static __repr__ = function() {
-		return "<dunder '"+instanceof(self)+" value=`"+__str__()+"`>";
+		return "<dunder '"+instanceof(self)+" value=`"+__string__()+"`>";
 	}
 	static toString = function() {
-		return __str__();
+		return __string__();
 	}
 	
 	// Mathematical operators
 	static __eq__ = function(_other) {
-		if (is_string(_other)) {
-			return __str__() == _other;
+		if (__dunder__.can_string(_other)) {
+			return __string__() == __dunder__.as_string(_other);
 		}
 		if (__dunder__.is_type(_other, DunderUlid)) {
 			return array_equals(values, _other.values);
 		}
-		__dunder__.__throw_if_not_struct_with_method(_other, "__str__");
-		return __str__() == _other.__str__();
+		return false;
 	}
 	
 	// ULID methods

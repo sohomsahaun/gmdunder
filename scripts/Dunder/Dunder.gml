@@ -53,6 +53,7 @@ function Dunder() constructor {
 		return _struct.__clone__();
 	}
 	
+	
 	// ******
 	// ****** Convenience functions for constructing specific dunder structs
 	// ******
@@ -130,50 +131,88 @@ function Dunder() constructor {
 		return init(DunderList, _values, _copy);
 	}
 	
+	
 	// ******
 	// ****** Representation and conversion to GML types
 	// ******
 		
-	static repr = function(_struct) {
-		if (is_struct_with_method(_struct, "__repr__")) {
-			return _struct.__repr__();
+	static repr = function(_input) {
+		if (is_struct_with_method(_input, "__repr__")) {
+			return _input.__repr__();
 		}
-		return json_stringify(_struct);
+		return json_stringify(_input);
 	}
 	
-	static as_str = function(_struct) {
-		if (is_struct_with_method(_struct, "__str__")) {
-			return _struct.__str__();
+	static as_string = function(_input) {
+		if (is_string(_input)) {
+			return _input;	
 		}
-		return string(_struct);
+		if (is_struct_with_method(_input, "__string__")) {
+			return _input.__string__();
+		}
+		throw init(DunderExceptionTypeError, "Can't coerse type "+typeof(_input)+" to string");
 	}
 	
-	static as_bool = function(_struct) {
-		if (is_struct_with_method(_struct, "__bool__")) {
-			return _struct.__bool__();
+	static as_boolean = function(_input) {
+		if (is_bool(_input) or _input == true or _input == false) {
+			return _input;	
 		}
-		return bool(_struct);
+		if (is_struct_with_method(_input, "__boolean__")) {
+			return _input.__boolean__();
+		}
+		throw init(DunderExceptionTypeError, "Can't coerse type "+typeof(_input)+" to boolean");
 	}
 	
-	static as_struct = function(_struct) {
-		if (is_struct_with_method(_struct, "__struct__")) {
-			return _struct.__struct__();
+	static as_number = function(_input) {
+		if (is_numeric(_input)) {
+			return _input;	
 		}
-		if (is_struct(_struct)) {
-			return _struct;
+		if (is_struct_with_method(_input, "__number__")) {
+			return _input.__number__();
 		}
-		throw init(DunderExceptionTypeError, "Can't coerse type "+typeof(_struct)+" to struct");
+		throw init(DunderExceptionTypeError, "Can't coerse type "+typeof(_input)+" to number");
 	}
 	
-	static as_array = function(_struct) {
-		if (is_struct_with_method(_struct, "__array__")) {
-			return _struct.__array__();
+	static as_struct = function(_input) {
+		if (is_struct_with_method(_input, "__struct__")) {
+			return _input.__struct__();
 		}
-		if (is_array(_struct)) {
-			return _struct;
+		if (not is_dunder_struct(_input) and is_struct(_input)) {
+			return _input;
 		}
-		throw init(DunderExceptionTypeError, "Can't coerse type "+typeof(_struct)+" to array");
+		throw init(DunderExceptionTypeError, "Can't coerse type "+typeof(_input)+" to struct");
 	}
+	
+	static as_array = function(_input) {
+		if (is_array(_input)) {
+			return _input;
+		}
+		if (is_struct_with_method(_input, "__array__")) {
+			return _input.__array__();
+		}
+		throw init(DunderExceptionTypeError, "Can't coerse type "+typeof(_input)+" to array");
+	}
+		
+	static can_string = function(_input) {
+		return is_string(_input) or is_struct_with_method(_input, "__string__");
+	}
+	
+	static can_boolean = function(_input) {
+		return is_bool(_input) or _input == true or _input == false or is_struct_with_method(_input, "__boolean__");
+	}
+	
+	static can_number = function(_input) {
+		return is_numeric(_input) or is_struct_with_method(_input, "__number__");
+	}
+	
+	static can_struct = function(_input) {
+		return is_struct_with_method(_input, "__struct__") or (not is_dunder_struct(_input) and is_struct(_input));
+	}
+	
+	static can_array = function(_input) {
+		return is_array(_input) or is_struct_with_method(_input, "__array__");
+	}
+	
 	
 	// ******
 	// ****** Mathematical functions
@@ -229,6 +268,7 @@ function Dunder() constructor {
 		throw init(DunderExceptionNoMethod, "Neither arguments have an __eq__ method");
 	}
 	
+	
 	// ******
 	// ****** Structure access
 	// ******
@@ -278,7 +318,7 @@ function Dunder() constructor {
 		throw init(DunderExceptionNoMethod, "Struct "+instanceof(_struct)+" does not have a __removeitem__ or __removeattr__ method");
 	}
 
-	
+
 	// ******
 	// ****** Iteration
 	// ******
@@ -390,7 +430,7 @@ function Dunder() constructor {
 				throw exception(_err)
 			}
 			
-			if (not as_bool(_pair[0])) {
+			if (not as_boolean(_pair[0])) {
 				delete _iter;
 				return false;
 			}
@@ -417,12 +457,13 @@ function Dunder() constructor {
 				throw exception(_err)
 			}
 			
-			if (as_bool(_pair[0])) {
+			if (as_boolean(_pair[0])) {
 				delete _iter;
 				return true;
 			}
 		}
 	}
+	
 	
 	// ******
 	// ****** Type checking
@@ -465,6 +506,7 @@ function Dunder() constructor {
 	static is_struct_with_method = function(_struct, _method) {
 		return is_struct(_struct) and variable_struct_exists(_struct, _method)
 	}
+	
 	
 	// ******
 	// ****** Dunder-specific utilities

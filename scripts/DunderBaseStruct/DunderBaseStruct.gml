@@ -28,13 +28,13 @@ function DunderBaseStruct() constructor {
 	}
 	
 	// Representation methods
-	static __str__ = function() {
+	static __string__ = function() {
 		return json_stringify(self);
 	}
 	static __repr__ = function() {
 		return 	"<dunder '"+instanceof(self)+"'>";
 	}
-	static __bool__ = function() {
+	static __boolean__ = function() {
 		return bool(true);
 	}
 	// static __number__ = function()
@@ -72,6 +72,9 @@ function DunderBaseStruct() constructor {
 	// Type checking methods
 	static __type__ = function() {
 		return __bases__[0];
+	}
+	static __type_name__ = function() {
+		return script_get_name(__bases__[0]);
 	}
 	static __is_subtype__ = function(_type) {
 		// checks if this constructor is in my ancestors

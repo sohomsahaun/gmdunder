@@ -54,7 +54,7 @@ function DunderInstance() : DunderBaseStruct() constructor {
 			instance_destroy(instance, false);
 		}
 	}
-	static __str__ = function() {
+	static __string__ = function() {
 		return object_get_name(instance.object_index)+"("+string(instance)+")";
 	}
 	static __repr__ = function() {
