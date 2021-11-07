@@ -20,4 +20,6 @@
 //	show_debug_message(_value);	
 //});
 
-show_message(any([0,0,false]))
+data = init(TestDatastruct, {abc: 3});
+
+show_message(data)

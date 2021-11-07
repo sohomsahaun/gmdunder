@@ -95,6 +95,9 @@ function Dunder() constructor {
 	static reversed = function(_target) {
 		return init(DunderReversed, _target);
 	}
+	static field = function(_default_value, _default_factory, _validator) {
+		return init(DunderField, _default_value, _default_factory, _validator);	
+	}
 	
 	static init_string  = function(_value) {
 			// we're doing this pyramid of doom because gamemaker has no string_execute_ext for methods
@@ -254,6 +257,7 @@ function Dunder() constructor {
 		}
 		throw init(DunderExceptionNoMethod, "Struct "+instanceof(_struct)+" does not have a __removeitem__ or __removeattr__ method");
 	}
+
 	
 	// ******
 	// ****** Iteration
