@@ -89,6 +89,13 @@ function Dunder() constructor {
 		return init(DunderExceptionRuntimeError, _err);
 	}
 	
+	static range = function(_start=0, _stop, _step=1) {
+		return init(DunderRange, _start, _stop, _step);
+	}
+	static reversed = function(_target) {
+		return init(DunderReversed, _target);
+	}
+	
 	static init_string  = function(_value) {
 			// we're doing this pyramid of doom because gamemaker has no string_execute_ext for methods
 			switch(argument_count) {
@@ -263,6 +270,9 @@ function Dunder() constructor {
 	}
 	
 	static foreach = function(_struct, _func) {
+		if (is_array(_struct)) {
+			_struct = init(DunderList, _struct);
+		}
 		__throw_if_not_struct_with_method(_struct, "__iter__");
 		var _iter = _struct.__iter__();
 		__throw_if_not_struct_with_method(_iter, "__next__");
@@ -283,25 +293,111 @@ function Dunder() constructor {
 		}
 	}
 	
+	static map = function(_struct, _func) {
+		if (is_array(_struct)) {
+			_struct = init(DunderList, _struct);
+		}
+		__throw_if_not_struct_with_method(_struct, "__iter__");
+		var _iter = _struct.__iter__();
+		__throw_if_not_struct_with_method(_iter, "__next__");
+		
+		var _array = [];
+		while(true) {
+			try {
+				var _pair = _iter.__next__();
+			}
+			catch (_err) {
+				if (is_type(_err, DunderExceptionStopIteration)) {
+					delete _iter;
+					return init_list(_array);
+				}
+				throw exception(_err)
+			}
+			
+			array_push(_array, _func(_pair[0], _pair[1]));
+		}
+	}
+
+	static filter = function(_struct, _func) {
+		if (is_array(_struct)) {
+			_struct = init(DunderList, _struct);
+		}
+		__throw_if_not_struct_with_method(_struct, "__iter__");
+		var _iter = _struct.__iter__();
+		__throw_if_not_struct_with_method(_iter, "__next__");
+		
+		var _array = [];
+		while(true) {
+			try {
+				var _pair = _iter.__next__();
+			}
+			catch (_err) {
+				if (is_type(_err, DunderExceptionStopIteration)) {
+					delete _iter;
+					return init_list(_array);
+				}
+				throw exception(_err)
+			}
+			
+			if (_func(_pair[0], _pair[1])) {			
+				array_push(_array, _pair[0]);
+			}
+		}
+	}
 	
-	//__map__ = function(_func) {
-	//	var _len = array_length(__values);
-	//	var _array = array_create(_len);
-	//	for (var _i=0; _i<_len; _i++) {
-	//		__array[_i] = _func(_i, __values[_i]);
-	//	};
-	//}
-	//__filter__ = function(_func) {
-	//	var _len = array_length(__values);
-	//	var _array = array_create(_len);
-	//	for (var _i=0; _i<_len; _i++) {
-	//		if (_func(__values[_i])) {
-	//			array_push(_array, __values[_i]);
-	//		}
-	//	};
-	//	return _array;
-	//}
+	static all_ = function(_struct) {
+		if (is_array(_struct)) {
+			_struct = init(DunderList, _struct);
+		}
+		__throw_if_not_struct_with_method(_struct, "__iter__");
+		var _iter = _struct.__iter__();
+		__throw_if_not_struct_with_method(_iter, "__next__");
+		
+		while(true) {
+			try {
+				var _pair = _iter.__next__();
+			}
+			catch (_err) {
+				if (is_type(_err, DunderExceptionStopIteration)) {
+					delete _iter;
+					return true;
+				}
+				throw exception(_err)
+			}
+			
+			if (not as_bool(_pair[0])) {
+				delete _iter;
+				return false;
+			}
+		}
+	}
 	
+	static any = function(_struct) {
+		if (is_array(_struct)) {
+			_struct = init(DunderList, _struct);
+		}
+		__throw_if_not_struct_with_method(_struct, "__iter__");
+		var _iter = _struct.__iter__();
+		__throw_if_not_struct_with_method(_iter, "__next__");
+		
+		while(true) {
+			try {
+				var _pair = _iter.__next__();
+			}
+			catch (_err) {
+				if (is_type(_err, DunderExceptionStopIteration)) {
+					delete _iter;
+					return false;
+				}
+				throw exception(_err)
+			}
+			
+			if (as_bool(_pair[0])) {
+				delete _iter;
+				return true;
+			}
+		}
+	}
 	
 	// ******
 	// ****** Type checking

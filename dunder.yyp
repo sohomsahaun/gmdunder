@@ -2,6 +2,7 @@
   "resources": [
     {"id":{"name":"DunderExceptionNoMethod","path":"scripts/DunderExceptionNoMethod/DunderExceptionNoMethod.yy",},"order":4,},
     {"id":{"name":"DunderList","path":"scripts/DunderList/DunderList.yy",},"order":17,},
+    {"id":{"name":"DunderRange","path":"scripts/DunderRange/DunderRange.yy",},"order":20,},
     {"id":{"name":"DunderExceptionRuntimeError","path":"scripts/DunderExceptionRuntimeError/DunderExceptionRuntimeError.yy",},"order":8,},
     {"id":{"name":"DunderDict","path":"scripts/DunderDict/DunderDict.yy",},"order":13,},
     {"id":{"name":"DunderBaseStruct","path":"scripts/DunderBaseStruct/DunderBaseStruct.yy",},"order":0,},
@@ -11,6 +12,7 @@
     {"id":{"name":"DunderInstance","path":"scripts/DunderInstance/DunderInstance.yy",},"order":4,},
     {"id":{"name":"DunderExceptionStopIteration","path":"scripts/DunderExceptionStopIteration/DunderExceptionStopIteration.yy",},"order":9,},
     {"id":{"name":"DunderExceptionResourceNotFound","path":"scripts/DunderExceptionResourceNotFound/DunderExceptionResourceNotFound.yy",},"order":7,},
+    {"id":{"name":"DunderReversed","path":"scripts/DunderReversed/DunderReversed.yy",},"order":21,},
     {"id":{"name":"test","path":"objects/test/test.yy",},"order":2,},
     {"id":{"name":"DunderExceptionBadArgument","path":"scripts/DunderExceptionBadArgument/DunderExceptionBadArgument.yy",},"order":1,},
     {"id":{"name":"Dunder","path":"scripts/Dunder/Dunder.yy",},"order":1,},

@@ -3,15 +3,19 @@ function DunderIterator() : DunderBaseStruct() constructor {
 	__bases_add__(DunderIterator);
 	
 	static __init__ = function(_getter, _keys_or_len) {
-		if (is_array(_keys_or_len)) {
+		if (__dunder__.is_struct_with_method(_keys_or_len, "__array__")) {
+			keys = _keys_or_len.__array__();
+			max_index = _keys_or_len.__len__();
+			advance = advance_key;
+		}
+		else if (is_array(_keys_or_len)) {
 			keys = _keys_or_len
 			max_index = array_length(keys);
-			advance = function() { return keys[index++]; };
-			index = 0;
+			advance = advance_key;
 		}
 		else {
 			max_index = _keys_or_len;
-			advance = function() { return index++; };
+			advance = advance_index;
 		}
 		
 		getter = _getter;
@@ -25,6 +29,14 @@ function DunderIterator() : DunderBaseStruct() constructor {
 		
 		var _index_or_key = advance();
 		var _value = getter(_index_or_key);
-		return [_index_or_key, _value];
+		return [_value, _index_or_key];
+	}
+	
+	static advance_key = function() {
+		return keys[index++];
+	}
+	
+	static advance_index = function() {
+		return index++;
 	}
 }

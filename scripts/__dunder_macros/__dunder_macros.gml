@@ -12,6 +12,8 @@ if (DUNDER_REGISTER_GLOBALS) {
 	globalvar init_string;init_string = method(_dunder, _dunder.init_string);
 	globalvar init_dict;init_dict = method(_dunder, _dunder.init_dict);
 	globalvar init_list;init_list = method(_dunder, _dunder.init_list);
+	globalvar range;range = method(_dunder, _dunder.range);
+	globalvar reversed;reversed = method(_dunder, _dunder.reversed);
 	
 	globalvar repr;repr = method(_dunder, _dunder.repr);
 	globalvar as_str;as_str = method(_dunder, _dunder.as_str);
@@ -33,6 +35,10 @@ if (DUNDER_REGISTER_GLOBALS) {
 	globalvar iter;iter = method(_dunder, method(_dunder, _dunder.iter));
 	globalvar next;next = method(_dunder, method(_dunder, _dunder.next));
 	globalvar foreach;foreach = method(_dunder, method(_dunder, _dunder.foreach));
+	globalvar map;map = method(_dunder, method(_dunder, _dunder.map));
+	globalvar filter;filter = method(_dunder, method(_dunder, _dunder.filter));
+	globalvar all_;all_ = method(_dunder, method(_dunder, _dunder.all_));
+	globalvar any;any = method(_dunder, method(_dunder, _dunder.any));
 	
 	globalvar is_subtype;is_subtype = method(_dunder, _dunder.is_subtype);
 	globalvar is_type;is_type = method(_dunder, _dunder.is_type);
