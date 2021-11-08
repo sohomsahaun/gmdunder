@@ -2,8 +2,8 @@
   "isDnD": false,
   "isCompatibility": false,
   "parent": {
-    "name": "Extensions",
-    "path": "folders/Dunder/Extensions.yy",
+    "name": "DataStructs",
+    "path": "folders/Dunder/DataStructs.yy",
   },
   "resourceVersion": "1.0",
   "name": "DunderDataStruct",

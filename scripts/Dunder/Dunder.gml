@@ -410,6 +410,31 @@ function Dunder() constructor {
 		}
 	}
 	
+	static reduce = function(_struct, _value, _func) {
+		if (is_array(_struct)) {
+			_struct = init(DunderList, _struct);
+		}
+		__throw_if_not_struct_with_method(_struct, "__iter__");
+		var _iter = _struct.__iter__();
+		__throw_if_not_struct_with_method(_iter, "__next__");
+		
+		while(true) {
+			try {
+				var _pair = _iter.__next__();
+			}
+			catch (_err) {
+				if (is_type(_err, DunderExceptionStopIteration)) {
+					delete _iter;
+					return _value;
+				}
+				throw exception(_err)
+			}
+			
+			_value += _func(_value, _pair[0], _pair[1]);
+		}
+	}
+	
+	
 	static all_ = function(_struct) {
 		if (is_array(_struct)) {
 			_struct = init(DunderList, _struct);

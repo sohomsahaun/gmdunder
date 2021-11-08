@@ -11,5 +11,4 @@
 
 
 //env.connect();
-date = init(DunderDateTime);
-show_message(date)
+logger.info("testing", {x: 1, y: 2});
