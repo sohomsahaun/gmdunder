@@ -1,6 +1,5 @@
-function DunderExceptionRuntimeError() : DunderException() constructor {
+function DunderExceptionRuntimeError() : DunderException() constructor { REGISTER_SUBTYPE(DunderExceptionRuntimeError);
 	// For wrapping a gamemaker runtime exception
-	__bases_add__(DunderExceptionRuntimeError);
 	static __human_readable_name = "Runtime Error";
 	
 	static __init__ = function(_err) {

@@ -2,27 +2,27 @@ function DunderBaseStruct() constructor {
 	// Base struct for all Dunder structs to inherit from
 	
 	// Tracks inheritence
-	__bases__ = [DunderBaseStruct]
+	static __bases__ = [DunderBaseStruct]
 	static __bases_add__ = function(_constructor) {
 		// Constructs the inheritance array __bases__
-		array_insert(__bases__, 0, _constructor);
+		var _new_base = [_constructor]
+		array_copy(_new_base, 1, __bases__, 0, array_length(__bases__));
+		return _new_base;
 	}
 	
 	// My personal copy of dunder, so I can run these myself
-	static __dunder__ = new Dunder()
+	static __dunder__ = new DunderGlobal()
 	
 	// Creation methods
 	static __init__ = function() {}
-	static __del__ = function() {}
+	static __cleanup__ = function() {}
 	static __clone__ = function() {
 		var _clone = __dunder__.init(self.__type__())
 		var _keys = variable_struct_get_names(self);
 		var _len = variable_struct_names_count(self);
 		for (var _i=0; _i<_len; _i++) {
 			var _key = _keys[_i];
-			if (_key != "__bases__") {
-				_clone[$ _key] = self[$ _key];
-			}
+			_clone[$ _key] = self[$ _key];
 		}
 		return _clone;
 	}
@@ -45,13 +45,13 @@ function DunderBaseStruct() constructor {
 	// Mathematical methods
 	//static __add__ = function(_other)
 	//static __radd__ = function(_other)
-	//static __sub__ = function(_other)
-	//static __rsub__ = function(_other)
-	//static __mul__ = function(_other)
-	//static __rmul__ = function(_other)
-	//static __div__ = function(_other)
-	//static __rdiv__ = function(_other)
-	//static __eq__ = function(_other);
+	//static __subtract__ = function(_other)
+	//static __rsubtract__ = function(_other)
+	//static __multiply__ = function(_other)
+	//static __rmultiply__ = function(_other)
+	//static __divide__ = function(_other)
+	//static __rdivide__ = function(_other)
+	//static __equals__ = function(_other);
 	
 	// Structure methods
 	//static __len__ = function()

@@ -1,14 +1,11 @@
-function DunderDataStruct() : DunderBaseStruct() constructor {
+function DunderDataStruct() : DunderBaseStruct() constructor {REGISTER_SUBTYPE(DunderDataStruct);
 	// A managed data struct
-	__bases_add__(DunderDataStruct);
 	
 	static __init__ = function(_values={}) {
 		var _keys = variable_struct_get_names(self);
 		var _len = variable_struct_names_count(self);
 		for (var _i=0; _i<_len; _i++) {
 			var _key = _keys[_i];
-			if (_key == "__bases__") continue;
-			
 			var _field = self[$ _key];
 			
 			if (variable_struct_exists(_values, _key)) {
@@ -31,5 +28,9 @@ function DunderDataStruct() : DunderBaseStruct() constructor {
 				}			
 			}
 		}
+	}
+	
+	static field = function(_default_value=undefined, _default_factory=undefined, _validator=undefined) {
+		return init(DunderField, _default_value, _default_factory, _validator);	
 	}
 }

@@ -1,7 +1,5 @@
-function DunderReversed() : DunderBaseStruct() constructor {
+function DunderReversed() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(DunderReversed);
 	// An object that reverses another object
-	__bases_add__(DunderReversed);
-	
 	static __init__ = function(_target) {
 		if (__dunder__.is_struct_with_method(_target, "__getitem__") and
 			__dunder__.is_struct_with_method(_target, "__len__")) {

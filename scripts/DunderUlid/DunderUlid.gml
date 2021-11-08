@@ -1,7 +1,5 @@
-function DunderUlid() : DunderBaseStruct() constructor {
+function DunderUlid() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(DunderUlid);
 	// A range of values
-	__bases_add__(DunderUlid);
-	
 	static __rng = __dunder__.init(DunderRng);
 	static __crockford_alphabet = [
 		"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A",
@@ -101,7 +99,7 @@ function DunderUlid() : DunderBaseStruct() constructor {
 	}
 	
 	// Mathematical operators
-	static __eq__ = function(_other) {
+	static __equals__ = function(_other) {
 		if (__dunder__.can_string(_other)) {
 			return __string__() == __dunder__.as_string(_other);
 		}
@@ -125,7 +123,6 @@ function DunderUlid() : DunderBaseStruct() constructor {
 		static __crockford_lookup = undefined;
 		
 		if (is_undefined(__crockford_lookup)) {
-			show_debug_message("generate lookup");
 			__crockford_lookup = {}
 			for (var _i=0; _i<32; _i++) {
 				__crockford_lookup[$ __crockford_alphabet[_i]] = _i;

@@ -1,15 +1,27 @@
-function DunderEnv() : DunderDict() constructor {
+function DunderEnv() : DunderDict() constructor { REGISTER_SUBTYPE(DunderEnv);
 	// Manages environmental variables
-	__bases_add__(DunderEnv);
-	
-	static __init__ = function() {
+	static __init__ = function(_logger=undefined) {
 		// Initialize: try to load local dotenv
 		values = {}
+				
+		if (is_undefined(_logger)) {
+			logger = __dunder__.init(DunderLogger, "env")
+		}
+		else {
+			logger = _logger;	
+		}
 		
-	    var _project_dir = __get_project_dir();
-	    if (_project_dir.is_dir()) {
-			load_env_from_file(_project_dir.join(".env"));
-	    }
+		try {
+		    var _project_dir = __get_project_dir();
+		    if (_project_dir.is_dir()) {
+				load_env_from_file(_project_dir.join(".env"));
+		    }
+		}
+		catch (_err) {
+			if (not __dunder__.is_subtype(_err, DunderExceptionFileError)) {
+				throw _err;
+			}
+		}
 	}
 
 	// Env functions
@@ -20,7 +32,7 @@ function DunderEnv() : DunderDict() constructor {
 		}
 		
 		var _file = __dunder__.init(DunderFile, _path);
-		foreach(_file, method(self, function(_line) {
+		__dunder__.foreach(_file, method(self, function(_line) {
 			var _parts = _line.split("=", 1);
 			if (array_length(_parts) == 2) {
 				var _key_string = __dunder__.init(DunderString, _parts[0])
@@ -29,8 +41,8 @@ function DunderEnv() : DunderDict() constructor {
 				var _key = _key_string.trim()
 				var _value = _value_string.rtrim()
 				
-				show_debug_message("Env: Loaded " + _key + "=" + _value);
-				self.set(_key, _value)
+				logger.debug("Found env", {key:_key, value:_value});
+				set(_key, _value)
 				
 				delete _key_string;
 				delete _value_string;
@@ -53,7 +65,7 @@ function DunderEnv() : DunderDict() constructor {
 	    		}
     		}
 			else {
-    			show_debug_message("ENV: could not find build.bff");
+				logger.debug("No build.bff found, not using local .env");
 			}	
     	}
 

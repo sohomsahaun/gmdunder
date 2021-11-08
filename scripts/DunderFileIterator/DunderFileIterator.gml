@@ -1,7 +1,5 @@
-function DunderFileIterator() : DunderBaseStruct() constructor {
+function DunderFileIterator() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(DunderFileIterator);
 	// An file iterator that reads line by line
-	__bases_add__(DunderFileIterator);
-	
 	static __init__ = function(_input) {
 		var _path = __dunder__.as_string(_input);
 		if (not file_exists(_path)) {

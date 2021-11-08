@@ -2,11 +2,11 @@
   "isDnD": false,
   "isCompatibility": false,
   "parent": {
-    "name": "dunder",
-    "path": "dunder.yyp",
+    "name": "Dunder",
+    "path": "folders/Dunder.yy",
   },
   "resourceVersion": "1.0",
-  "name": "TestDatastruct",
+  "name": "DunderGlobal",
   "tags": [],
   "resourceType": "GMScript",
 }

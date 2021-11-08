@@ -1,7 +1,5 @@
-function DunderPath() : DunderBaseStruct() constructor {
+function DunderPath() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(DunderPath);
 	// A path manager
-	__bases_add__(DunderPath);
-	
 	static separator = "/";
 	
 	static __init__ = function(_input) {

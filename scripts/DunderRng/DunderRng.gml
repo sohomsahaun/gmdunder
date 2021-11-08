@@ -1,9 +1,6 @@
-function DunderRng() : DunderBaseStruct() constructor {
+function DunderRng() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(DunderRange);
 	// An LGC-based RNG. Current params are based on rand48
-	__bases_add__(DunderRange);
-	
 	static __init__ = function(_seed=undefined, _multiplier=25214903917, _increment=11, _modulus=0x1000000000000, _shift=16, _mask=0xffffffff) {
-		
 		multiplier = _multiplier;
 		increment = _increment
 		modulus = _modulus;

@@ -1,5 +1,4 @@
-function DunderExceptionResourceNotFound() : DunderException() constructor {
+function DunderExceptionResourceNotFound() : DunderException() constructor { REGISTER_SUBTYPE(DunderExceptionResourceNotFound);
 	// For when something is not found
-	__bases_add__(DunderExceptionResourceNotFound);
 	static __human_readable_name = "Resource Not Found";
 }

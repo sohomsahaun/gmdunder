@@ -1,7 +1,6 @@
-function DunderString() : DunderBaseStruct() constructor {
+function DunderString() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(DunderString);
 	// A string wrapper
-	__bases_add__(DunderString);
-	
+
 	static __init__ = function() {
 		value = "";
 		for (var _i=0; _i<argument_count; _i++) {
@@ -47,11 +46,11 @@ function DunderString() : DunderBaseStruct() constructor {
 		var _string = __dunder__.as_string(_other)
 		return __clone__(value + _string);
 	}
-	static __mul__ = function(_other) {
+	static __multiply__ = function(_other) {
 		var _number = __dunder__.as_number(_other);
 		return __clone__(string_repeat(value, _number));
 	}
-	static __eq__ = function(_other) {
+	static __equals__ = function(_other) {
 		if (not __dunder__.can_string(_other)) {
 			return false;
 		}
@@ -59,10 +58,10 @@ function DunderString() : DunderBaseStruct() constructor {
 	}
 	
 	static __radd__ = __add__;
-	static __rmul__ = __mul__;
+	static __rmultiply__ = __multiply__;
 	static add = __add__;
-	static mul = __mul__;
-	static eq = __eq__;
+	static multiply = __multiply__;
+	static equals = __equals__;
 	
 	// Structure access
 	static __len__ = function() {

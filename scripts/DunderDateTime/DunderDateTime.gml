@@ -1,9 +1,5 @@
-function DunderDateTime() : DunderBaseStruct() constructor {
-	// A path manager
-	__bases_add__(DunderDateTime);
-	
-	static separator = "/";
-	
+function DunderDateTime() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(DunderDateTime);
+	// A Datetime object
 	static __init__ = function(_input=undefined, _format="%Y-%m-%dT%H:%M:%SZ", _timezone=timezone_utc) {
 		timezone = _timezone ?? date_get_timezone();
 		
@@ -167,7 +163,6 @@ function DunderDateTime() : DunderBaseStruct() constructor {
 	static day = function() {
 		return string(date_get_day(datetime));
 	}
-	
 	
 	static hour = function() {
 		return string(date_get_hour(datetime));

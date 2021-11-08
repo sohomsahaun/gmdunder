@@ -1,6 +1,6 @@
-function DunderInstance() : DunderBaseStruct() constructor {
+function DunderInstance() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(DunderInstance);
 	// Wraps a gamemaker object instance, to make it managable as a Dunder Struct
-	__bases_add__(DunderInstance);
+
 	
 	static __init__ = function(_object=0, _xx=0, _yy=0, _depth=0, _layer=undefined, _values=undefined) {
 		if (not object_exists(_object)) {
@@ -45,7 +45,7 @@ function DunderInstance() : DunderBaseStruct() constructor {
 			}
 		}
 	}
-	static __del__ = function() {
+	static __cleanup__ = function() {
 		if (instance != noone) {
 			instance_destroy(instance, false);
 		}

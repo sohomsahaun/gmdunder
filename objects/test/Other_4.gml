@@ -1,17 +1,5 @@
-//(DunderSocket, network_socket_tcp, "127.0.0.1", 56951);
-//env.set_connect_callback(method(self, function() {
-//	show_debug_message("connected");	
-	
-//	env.send_string("hello");
-//}));
+a = dunder.init_dict({a: 123, b: 234})
 
-//env.set_packet_callback(function(_buff, _size) {
-//	show_debug_message("pagcket " +string(_size));	
-//});
-
-
-//env.connect();
-logger.log_to_file();
-logger.info("testing", {x: 1, y: 2});
-
-logger.close_log();
+show_message(dunder.reduce(a, "", function(_prev, _value, _key) {
+	return _prev + _key + "=" + string(_value) + " ";
+}));

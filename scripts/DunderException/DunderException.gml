@@ -1,6 +1,5 @@
-function DunderException() : DunderBaseStruct() constructor {
+function DunderException() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(DunderException);
 	// A Dunder-style exception, This is thrown internally
-	__bases_add__(DunderException);
 	
 	// a nice, human-readable name
 	static __human_readable_name = "Exception";

@@ -1,5 +1,4 @@
-function DunderExceptionTypeError() : DunderException() constructor {
+function DunderExceptionTypeError() : DunderException() constructor { REGISTER_SUBTYPE(DunderExceptionTypeError);
 	// For when type checks fail
-	__bases_add__(DunderExceptionTypeError);
 	static __human_readable_name = "Bad Variable Type";
 }

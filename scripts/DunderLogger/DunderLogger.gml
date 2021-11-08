@@ -1,7 +1,5 @@
-function DunderLogger() : DunderBaseStruct() constructor {
-	// A range of values
-	__bases_add__(DunderLogger);
-	
+function DunderLogger() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(DunderLogger);
+	// A Logger
 	static __init__ = function(_name="logger", _bound_values=undefined, _root_logger=undefined) {
 		name = _name;
 		bound_values = __dunder__.init(DunderDict, _bound_values);
@@ -40,13 +38,9 @@ function DunderLogger() : DunderBaseStruct() constructor {
 			_combined.update(_extras);
 		}
 		else {
-			var _combined = bound_values;	
+			var _combined = bound_values;
 		}
 		
-		var _combined_str = __dunder__.reduce(_combined, "", function(_prev, _value, _key) {
-			return _prev + _key + "=" + string(_value) + " ";
-		});
-
 		if (__json_logging) {
 			var _datetime = __dunder__.init(DunderDateTime);
 			var _struct = {
@@ -63,6 +57,10 @@ function DunderLogger() : DunderBaseStruct() constructor {
 			var _output = json_stringify(_struct);
 		}
 		else {
+			var _combined_str = __dunder__.reduce(_combined, "", function(_prev, _value, _key) {
+				return _prev + _key + "=" + string(_value) + " ";
+			});
+		
 			var _datetime = __dunder__.init(DunderDateTime, undefined, "%Y-%m-%d %H:%M:%S");
 			var _output = _datetime.__string__()
 			delete _datetime;
@@ -112,17 +110,17 @@ function DunderLogger() : DunderBaseStruct() constructor {
 	static info = function(_message, _extras=undefined, _type=undefined) {
 		// Create an info-level log message
 		if (LOGGING_DISABLED or not __enable_info) return;
-		self.logger(LOG_INFO, _message, _extras, _type);	
+		logger(LOG_INFO, _message, _extras, _type);	
 	}
 	static log = function(_message, _extras=undefined, _type=undefined) {
 		// This function exists purely to appease javascript "console.log()" lovers
 		if (LOGGING_DISABLED or not __enable_info) return;
-		self.logger(LOG_INFO, _message, _extras, _type);	
+		logger(LOG_INFO, _message, _extras, _type);	
 	}
 	static warning = function(_message, _extras=undefined, _type=undefined) {
 		// Create a warning-level log message
 		if (LOGGING_DISABLED or not __enable_warning) return;
-		self.logger(LOG_WARNING, _message, _extras, _type);	
+		logger(LOG_WARNING, _message, _extras, _type);	
 	}
 	static error = function(_message, _extras=undefined, _type=undefined) {
 		// Create an error-level log message
@@ -131,30 +129,30 @@ function DunderLogger() : DunderBaseStruct() constructor {
 		if (__sentry_send_errors) {
 			var _stacktrace = debug_get_callstack();
 			array_delete(_stacktrace, 0, 1);
-			self.logger(LOG_ERROR, _message, _extras, _type, _stacktrace);
+			logger(LOG_ERROR, _message, _extras, _type, _stacktrace);
 		}
 		else {
-			self.logger(LOG_ERROR, _message, _extras, _type);
+			logger(LOG_ERROR, _message, _extras, _type);
 		}
 	}
 	static fatal = function(_message, _extras=undefined, _type=undefined) {
 		// Create an fatal-level log message
 		if (LOGGING_DISABLED or not __enable_fatal) return;
-		self.logger(LOG_FATAL, _message, _extras, _type);	
+		logger(LOG_FATAL, _message, _extras, _type);	
 	}
 	static stacktrace = function(_message, _extras=undefined, _type=undefined) {
 		// Log a stacktrace
 		if (LOGGING_DISABLED) return;
 		var _stacktrace = debug_get_callstack();
 		array_delete(_stacktrace, 0, 1);
-		self.logger(LOG_DEBUG, _message, _extras, _type, _stacktrace);	
+		logger(LOG_DEBUG, _message, _extras, _type, _stacktrace);	
 	}
 	static exception = function(_input, _extras=undefined, _level=LOG_ERROR) {
 		// logs a GML catch exception, or one of our own Exception structs
 		if (LOGGING_DISABLED) return;
 	
 		var _exception = __dunder__.exception(_input);
-		self.logger(_level, string(_exception.message), _extras, undefined, _exception.stacktrace);
+		logger(_level, string(_exception.message), _extras, undefined, _exception.stacktrace);
 	}
 	
 	static bind_named = function(_name, _extras=undefined) {

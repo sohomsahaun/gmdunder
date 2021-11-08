@@ -1,5 +1,4 @@
-function DunderExceptionFileError() : DunderException() constructor {
+function DunderExceptionFileError() : DunderException() constructor { REGISTER_SUBTYPE(DunderExceptionFileError);
 	// For when a dunder method is not found
-	__bases_add__(DunderExceptionFileError);
 	static __human_readable_name = "File Error";
 }

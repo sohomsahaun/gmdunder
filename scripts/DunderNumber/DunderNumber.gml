@@ -1,6 +1,5 @@
-function DunderNumber() : DunderBaseStruct() constructor {
+function DunderNumber() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(DunderNumber);
 	// A number wrapper
-	__bases_add__(DunderNumber);
 	
 	static __init__ = function(_input) {
 		if (__dunder__.can_number(_input)) {
@@ -39,39 +38,39 @@ function DunderNumber() : DunderBaseStruct() constructor {
 		var _number = __dunder__.as_number(_other)
 		return __clone__(value + _number);
 	}
-	static __sub__ = function(_other) {
+	static __subtract__ = function(_other) {
 		var _number = __dunder__.as_number(_other);
 		return __clone__(value - _number);
 	}
-	static __rsub__ = function(_other) {
+	static __rsubtract__ = function(_other) {
 		var _number = __dunder__.as_number(_other)
 		return __clone__(_number - value);
 	}
-	static __mul__ = function(_other) {
+	static __multiply__ = function(_other) {
 		var _number = __dunder__.as_number(_other)
 		return __clone__(value * _number);
 	}
-	static __div__ = function(_other) {
+	static __divide__ = function(_other) {
 		var _number = __dunder__.as_number(_other)
 		return __clone__(value / _number);
 	}
-	static __rdiv__ = function(_other) {
+	static __rdivide__ = function(_other) {
 		var _number = __dunder__.as_number(_other)
 		return __clone__(_number / value);
 	}
-	static __eq__ = function(_other) {
+	static __equals__ = function(_other) {
 		if (not __dunder__.can_number(_other)) {
 			return false;
 		}
 		return value == __dunder__.as_number(_other);
 	}
 	static __radd__ = __add__;
-	static __rmul__ = __mul__;
+	static __rmultiply__ = __multiply__;
 	static add = __add__;
-	static sub = __sub__;
-	static mul = __mul__;
-	static div_ = __div__;
-	static eq = __eq__;
+	static subtract = __subtract__;
+	static multiply = __multiply__;
+	static divide = __divide__;
+	static equals = __equals__;
 	
 	// Type checking methods
 	static __is_same_type_as__ = function(_other) {

@@ -1,7 +1,5 @@
-function DunderRange() : DunderBaseStruct() constructor {
+function DunderRange() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(DunderRange);
 	// A range of values
-	__bases_add__(DunderRange);
-	
 	static __init__ = function(_start=0, _stop=undefined, _step=1) {
 		if (not is_numeric(_start)) {
 			throw __dunder__.init(DunderExceptionValueError, "Start must be numeric");	

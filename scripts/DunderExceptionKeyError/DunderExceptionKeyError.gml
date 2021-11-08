@@ -1,5 +1,4 @@
-function DunderExceptionKeyError() : DunderException() constructor {
+function DunderExceptionKeyError() : DunderException() constructor { REGISTER_SUBTYPE(DunderExceptionKeyError);
 	// For when type checks fail
-	__bases_add__(DunderExceptionKeyError);
 	static __human_readable_name = "Invalid Key";
 }

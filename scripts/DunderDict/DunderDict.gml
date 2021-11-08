@@ -1,8 +1,5 @@
-function DunderDict() : DunderBaseStruct() constructor {
+function DunderDict() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(DunderDict);
 	// A dict wrapper
-	__bases_add__(DunderDict);
-
-	// Initializer
 	static __init__ = function(_input, _copy=false) {
 		if (__dunder__.can_struct(_input)) {
 			var _incoming_struct = __dunder__.as_struct(_input);

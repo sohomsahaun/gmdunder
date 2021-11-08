@@ -1,7 +1,5 @@
-function DunderList() : DunderBaseStruct() constructor {
+function DunderList() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(DunderList);
 	// A list wrapper
-	__bases_add__(DunderList);
-	
 	static __rng = __dunder__.init(DunderRng);
 
 	// Initializer
@@ -43,7 +41,7 @@ function DunderList() : DunderBaseStruct() constructor {
 		
 		return __clone__(_new_array)
 	}
-	static __mul__ = function(_other) {
+	static __multiply__ = function(_other) {
 		var _number = ceil(__dunder__.as_number(_other));
 
 		var _len = array_length(values);
@@ -53,17 +51,17 @@ function DunderList() : DunderBaseStruct() constructor {
 		}
 		return __clone__(_new_array);
 	}
-	static __eq__ = function(_other) {
+	static __equals__ = function(_other) {
 		if (not __dunder__.can_array(_other)) {
 			return false;	
 		}
 		return array_equals(values, __dunder__.as_array(_other));
 	}
 	static __radd__ = __add__;
-	static __rmul__ = __mul__;
+	static __rmultiply__ = __multiply__;
 	static add = __add__;
-	static mul = __mul__;
-	static eq = __eq__;
+	static multiply = __multiply__;
+	static equals = __equals__;
 	
 	// Representation methods
 	static __repr__ = function() {
@@ -137,7 +135,7 @@ function DunderList() : DunderBaseStruct() constructor {
 	}
 	
 	// Gamemaker array functions
-	static equals = __eq__;
+	static equals = __equals__;
 	static push = function(_value) { array_push(values, _value); }
 	static pop = function(_value) { return array_pop(values); }
 	static insert = function(_index, _value) { return array_insert(values, _index, _value); }

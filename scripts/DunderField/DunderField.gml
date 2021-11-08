@@ -1,7 +1,5 @@
-function DunderField() : DunderBaseStruct() constructor {
+function DunderField() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(DunderField);
 	// A field object used to construct datastructs
-	__bases_add__(DunderField);
-	
 	static __init__ = function(_default_value=undefined, _default_factory=undefined, _validator=undefined) {
 		default_value = _default_value;
 		default_factory = _default_factory;

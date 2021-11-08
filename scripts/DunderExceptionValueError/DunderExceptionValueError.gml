@@ -1,5 +1,4 @@
-function DunderExceptionValueError() : DunderException() constructor {
+function DunderExceptionValueError() : DunderException() constructor { REGISTER_SUBTYPE(DunderExceptionValueError);
 	// For when type checks fail
-	__bases_add__(DunderExceptionValueError);
 	static __human_readable_name = "Invalid Value";
 }

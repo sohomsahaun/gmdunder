@@ -1,6 +1,5 @@
-function DunderIterator() : DunderBaseStruct() constructor {
+function DunderIterator() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(DunderIterator);
 	// An iterator iterator
-	__bases_add__(DunderIterator);
 	
 	static __init__ = function(_getter, _keys_or_len) {
 		if (__dunder__.can_array(_keys_or_len)) {

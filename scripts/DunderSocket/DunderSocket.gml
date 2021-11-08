@@ -1,8 +1,7 @@
-function DunderSocket() : DunderBaseStruct() constructor {
+function DunderSocket() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(DunderSocket);
 	// A list wrapper
-	__bases_add__(DunderSocket);
 	
-	static __init__ = function(_socket_type, _host, _port, _raw=true) {
+	static __init__ = function(_socket_type, _host, _port, _raw=true, _logger=undefined) {
 		socket_type = _socket_type;
 		host = _host;
 		port = _port;
@@ -20,11 +19,18 @@ function DunderSocket() : DunderBaseStruct() constructor {
 		__listener_instance = __dunder__.init(DunderInstance, __obj_dunder_socket_listener, 0, 0, 0, undefined,
 			[method(self, __step_handler), method(self, __async_networking_handler)]
 		);
+		
+		if (is_undefined(_logger)) {
+			logger = __dunder__.init(DunderLogger, "socket", {host:host, port:port})
+		}
+		else {
+			logger = _logger;	
+		}
 	}
 	
-	static __del__ = function() {
+	static __cleanup__ = function() {
 		disconnect();
-		__listener_instance.__del__();
+		__listener_instance.__cleanup__();
 		delete __listener_instance;
 	}
 	
@@ -117,7 +123,7 @@ function DunderSocket() : DunderBaseStruct() constructor {
 				if (_async_load[? "succeeded"]) {
 					__connected = true;				
 					__disconnected_time = 0;
-					show_debug_message("Socket Client connected to " + string(host) + " port " + string(port))
+					logger.info("Connected")
 					if (is_method(connect_callback)) {
 						connect_callback();
 					}
@@ -129,7 +135,7 @@ function DunderSocket() : DunderBaseStruct() constructor {
 
 			case network_type_disconnect:
 				__connected = false;
-				show_debug_message("Socket Client disconnected")
+					logger.info("Disconnected")
 				if (is_method(disconnect_callback)) {
 					disconnect_callback();
 				}
@@ -151,7 +157,7 @@ function DunderSocket() : DunderBaseStruct() constructor {
 			__disconnected_time += 1;
 			if (__disconnected_time > game_get_speed(gamespeed_fps) * 2) {
 				__disconnected_time = 0;
-				show_debug_message("Socket Client connection stale")
+				logger.warning("Connection stale, reconnecting...")
 				connect();
 			}
 		}

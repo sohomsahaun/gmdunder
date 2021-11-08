@@ -1,12 +1,10 @@
-function DunderFile() : DunderDict() constructor {
+function DunderFile() : DunderDict() constructor { REGISTER_SUBTYPE(DunderFile);
 	// Handles a file
-	__bases_add__(DunderFile);
-	
 	static __init__ = function(_input) {
 		path = __dunder__.as_string(_input);
 		__file_handle = -1;
 	}
-	static __del__ = function() {
+	static __cleanup__ = function() {
 		close();	
 	}
 	
