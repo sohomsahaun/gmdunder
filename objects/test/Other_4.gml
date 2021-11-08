@@ -1,13 +1,15 @@
-env = init(DunderSocket, network_socket_tcp, "127.0.0.1", 56951);
-env.set_connect_callback(method(self, function() {
-	show_debug_message("connected");	
+//(DunderSocket, network_socket_tcp, "127.0.0.1", 56951);
+//env.set_connect_callback(method(self, function() {
+//	show_debug_message("connected");	
 	
-	env.send_string("hello");
-}));
+//	env.send_string("hello");
+//}));
 
-env.set_packet_callback(function(_buff, _size) {
-	show_debug_message("pagcket " +string(_size));	
-});
+//env.set_packet_callback(function(_buff, _size) {
+//	show_debug_message("pagcket " +string(_size));	
+//});
 
 
-env.connect();
+//env.connect();
+date = init(DunderDateTime);
+show_message(date)
