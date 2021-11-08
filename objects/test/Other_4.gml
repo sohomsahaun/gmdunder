@@ -11,4 +11,7 @@
 
 
 //env.connect();
+logger.log_to_file();
 logger.info("testing", {x: 1, y: 2});
+
+logger.close_log();

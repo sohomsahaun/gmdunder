@@ -4,6 +4,10 @@ function DunderFile() : DunderDict() constructor {
 	
 	static __init__ = function(_input) {
 		path = __dunder__.as_string(_input);
+		__file_handle = -1;
+	}
+	static __del__ = function() {
+		close();	
 	}
 	
 	// Representation methods
@@ -43,5 +47,36 @@ function DunderFile() : DunderDict() constructor {
 	// Iteration methods
 	static __iter__ = function() {
 		return __dunder__.init(DunderFileIterator, path);
+	}
+	
+	static flush = function() {
+		if (__file_handle >= 0) {
+			file_text_close(__file_handle);
+			file_text_open_append(path);
+		}
+	}
+	
+	static open_append = function() {
+		if (__file_handle < 0) {
+			__file_handle = file_text_open_append(path);
+			if (__file_handle == -1) {
+				throw __dunder__.init(DunderExceptionFileError, "Could not open for writing "+path);
+			}
+		}
+	}
+	
+	static close = function() {
+		if (__file_handle >= 0) {
+			file_text_close(__file_handle);
+		}	
+	}
+	
+	static write_line = function(_input) {
+		if (__file_handle < 0) {
+			throw __dunder__.init(DunderExceptionFileError, "Can't write, file handle not open");
+		}
+		var _string = __dunder__.as_string(_input);
+		file_text_write_string(__file_handle, _string);
+		file_text_writeln(__file_handle);
 	}
 }

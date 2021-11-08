@@ -7,8 +7,7 @@ function DunderLogger() : DunderBaseStruct() constructor {
 		bound_values = __dunder__.init(DunderDict, _bound_values);
 		
 		__json_logging = false;
-		//__file_handle = -1;
-		//__filename = undefined;
+		__file = undefined;
 		__auto_flush = false;
 	
 		__root_logger = _root_logger;
@@ -82,7 +81,7 @@ function DunderLogger() : DunderBaseStruct() constructor {
 		}
 		
 		show_debug_message(_output);
-		// __write_line_to_file(_output);
+		__write_line_to_file(_output);
 		
 		if (not is_undefined(__sentry)) {
 			if (__sentry_send_errors and _level == LOG_ERROR) {
@@ -221,64 +220,51 @@ function DunderLogger() : DunderBaseStruct() constructor {
 		
 		return _str;
 	}
-}
+	
 
-
-//	flush_to_file = function() {
-//		// Flush pending log messages to file
-//		if (LOGGING_DISABLED) return;
-//		if (__file_handle >= 0) {
-//			file_text_close(__file_handle);
-//			file_text_open_append(__filename);
-//		}
-//	}
-	
-//	log_to_file = function(_filename=undefined, _auto_flush=false) {
-//		// Configure this logger to log to file
-//		if (LOGGING_DISABLED) return;
-//		close_log()
+	log_to_file = function(_filename=undefined, _auto_flush=false) {
+		if (LOGGING_DISABLED) return;
+		close_log()
 		
-//		__filename =_filename
-//		__auto_flush = _auto_flush;
+		__auto_flush = _auto_flush;
 		
-//		if (is_undefined(__filename)) {
-//			__filename = __generate_log_filename();	
-//		}
-		
-//		__file_handle = file_text_open_append(__filename);
-//		if (__file_handle == -1) {
-//			throw "Could not create log file";	
-//		}
-//		return self;
-//	}
-	
-	
-//	close_log = function() {
-//		// Explicitly close the log
-//		if (LOGGING_DISABLED) return;
-//		if (__file_handle >= 0) {
-//			file_text_close(__file_handle);
-//		}
-//	}
-	
-	
-//	__write_line_to_file = function(_output) {
-//		if ( __file_handle >= 0) {
-//			file_text_write_string(__file_handle, _output);
-//			file_text_writeln(__file_handle);
+		if (is_undefined(__file)) {
+			if (is_undefined(_filename)) {
+				_filename = __generate_log_filename();	
+			}
 			
-//			if (__auto_flush) {
-//				flush_to_file();
-//			}
-//		}
-//		else if (not is_undefined(__root_logger)) {
-//			// if I don't have a file handle, but have a root, and use grandparent's output
-//			__root_logger.__write_line_to_file(_output);
-//		}
-//	}
+			__file = __dunder__.init(DunderFile, _filename);	
+			__file.open_append();
+		}
+
+		return self;
+	}
 	
-//	__generate_log_filename = function() {
-//		var _datetime = date_current_datetime();	
-//		var _filename = "log_" + __date_string(_datetime, "") + __time_string(_datetime, "") + ".log";
-//		return _filename;
-//	}
+	
+	close_log = function() {
+		if (LOGGING_DISABLED) return;
+		if (not is_undefined(__file)) {
+			__file.close();	
+		}
+	}
+	
+	__write_line_to_file = function(_output) {
+		if (not is_undefined(__file)) {
+			__file.write_line(_output);
+			if (__auto_flush) {
+			__file.flush();
+			}
+		}
+		else if (not is_undefined(__root_logger)) {
+			// if I don't have a file handle, but have a root, and use grandparent's output
+			__root_logger.__write_line_to_file(_output);
+		}
+	}
+	
+	__generate_log_filename = function() {
+		var _datetime = __dunder__.init(DunderDateTime, undefined, "%Y%m%d%H%M%S");	
+		var _filename = "log_" + _datetime.__string__() + ".log";
+		delete _datetime;
+		return _filename;
+	}
+}
