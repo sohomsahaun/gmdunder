@@ -45,10 +45,6 @@ function DunderInstance() : DunderBaseStruct() constructor {
 			}
 		}
 	}
-	static destroy = function() {
-		instance_destroy(instance);
-		instance = noone;
-	}
 	static __del__ = function() {
 		if (instance != noone) {
 			instance_destroy(instance, false);
