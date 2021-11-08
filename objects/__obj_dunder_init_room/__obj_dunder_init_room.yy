@@ -18,16 +18,16 @@
   "physicsKinematic": false,
   "physicsShapePoints": [],
   "eventList": [
-    {"isDnD":false,"eventNum":4,"eventType":7,"collisionObjectId":null,"resourceVersion":"1.0","name":"","tags":[],"resourceType":"GMEvent",},
+    {"isDnD":false,"eventNum":0,"eventType":0,"collisionObjectId":null,"resourceVersion":"1.0","name":"","tags":[],"resourceType":"GMEvent",},
   ],
   "properties": [],
   "overriddenProperties": [],
   "parent": {
-    "name": "dunder",
-    "path": "dunder.yyp",
+    "name": "Dunder",
+    "path": "folders/Dunder.yy",
   },
   "resourceVersion": "1.0",
-  "name": "test",
+  "name": "__obj_dunder_init_room",
   "tags": [],
   "resourceType": "GMObject",
 }

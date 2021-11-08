@@ -1,0 +1,1 @@
+globalvar dunder;dunder = new Dunder();

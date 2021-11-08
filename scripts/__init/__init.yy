@@ -6,7 +6,7 @@
     "path": "dunder.yyp",
   },
   "resourceVersion": "1.0",
-  "name": "Base",
+  "name": "__init",
   "tags": [],
   "resourceType": "GMScript",
 }

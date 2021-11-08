@@ -3,7 +3,6 @@
 /// ****** (care should be taken to avoid shadowing any instance vars)
 /// ******
 
-globalvar dunder;dunder = new Dunder();
 //globalvar logger;logger = dunder.logger;
 
 //globalvar init;init = method(dunder, dunder.init);
@@ -61,6 +60,9 @@ globalvar dunder;dunder = new Dunder();
 
 //
 #macro REGISTER_SUBTYPE static __bases__ = __bases_add__
+
+// This is the name of the global var used to facilitate init room injection
+#macro DUNDER_FIRST_ROOM_GLOBAL "__dunder_first_room_callback__"
 
 /// ******
 /// ****** Logging macros

@@ -1,21 +1,13 @@
 function DunderEnv() : DunderDict() constructor { REGISTER_SUBTYPE(DunderEnv);
 	// Manages environmental variables
+	
 	static __init__ = function(_logger=undefined) {
-		// Initialize: try to load local dotenv
 		values = {}
-				
-		if (is_undefined(_logger)) {
-			logger = __dunder__.init(DunderLogger, "env")
-		}
-		else {
-			logger = _logger;	
-		}
+		logger = (is_undefined(_logger) ? __dunder__.init(DunderLogger, "env") : _logger);
 		
 		try {
 		    var _project_dir = __get_project_dir();
-		    if (_project_dir.is_dir()) {
-				load_env_from_file(_project_dir.join(".env"));
-		    }
+			load_env_from_file(_project_dir.join(".env"));
 		}
 		catch (_err) {
 			if (not __dunder__.is_subtype(_err, DunderExceptionFileError)) {
@@ -25,27 +17,17 @@ function DunderEnv() : DunderDict() constructor { REGISTER_SUBTYPE(DunderEnv);
 	}
 
 	// Env functions
-	static load_env_from_file = function(_input) {
-		var _path = __dunder__.as_string(_input);
-		if (not file_exists(_path)) {
-			throw __dunder__.init(DunderExceptionFileError, "Can't load file "+_path);
-		}
-		
+	static load_env_from_file = function(_path) {
 		var _file = __dunder__.init(DunderFile, _path);
 		__dunder__.foreach(_file, method(self, function(_line) {
 			var _parts = _line.split("=", 1);
+			
 			if (array_length(_parts) == 2) {
-				var _key_string = __dunder__.init(DunderString, _parts[0])
-				var _value_string = __dunder__.init(DunderString, _parts[1]);
-				
-				var _key = _key_string.trim()
-				var _value = _value_string.rtrim()
+				var _key = __dunder__.init(DunderString, _parts[0]).trim();
+				var _value = __dunder__.init(DunderString, _parts[1]).rtrim();
 				
 				logger.debug("Found env", {key:_key, value:_value});
 				set(_key, _value)
-				
-				delete _key_string;
-				delete _value_string;
 			}
 		}));
 	}
