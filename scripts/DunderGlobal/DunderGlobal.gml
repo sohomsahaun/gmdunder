@@ -81,20 +81,8 @@ function DunderGlobal() constructor {
 		return init(DunderReversed, _target);
 	}
 		
-	static init_instance = function(_object, _xx=0, _yy=0, _depth=0, _layer=undefined, _values={}) {
-		// Calls DunderInstance to wrap an object
-		
-		if (not object_exists(_object)) {
-			throw init(DunderExceptionResourceNotFound, "Could not find object "+string(_object))	
-		}
-		
-		if (not is_undefined(_layer)) {
-			var _inst = instance_create_layer(_xx, _yy, _layer, _object);
-		}
-		else {
-			var _inst = instance_create_depth(_xx, _yy, _depth, _object);
-		}
-		return init(DunderInstance, _inst, _values);
+	static init_instance = function(_object, _xx=0, _yy=0, _depth=0, _layer=undefined, _init_args=undefined) {
+		return init(DunderInstance, _object, _xx, _yy, _depth, _layer, _init_args);
 	}
 	
 	static init_string  = function(_value) {

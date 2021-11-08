@@ -16,7 +16,7 @@ function DunderSocket() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 		__connected = false;
 		__disconnected_time = 0;
 		__should_be_connected = false
-		__listener_instance = __dunder__.init(DunderInstance, __obj_dunder_socket_listener, 0, 0, 0, undefined,
+		__listener_instance = __dunder__.init_instance(__obj_dunder_socket_listener, 0, 0, 0, undefined,
 			[method(self, __step_handler), method(self, __async_networking_handler)]
 		);
 		
