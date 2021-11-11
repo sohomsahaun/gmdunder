@@ -10,7 +10,7 @@ function DunderDateTime() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Du
 			date_set_timezone(_list_timezone);
 		}
 		else {
-			datetime = __dunder__.as_number(_input);
+			datetime = dunder.as_number(_input);
 		}
 		
 		format = _format;

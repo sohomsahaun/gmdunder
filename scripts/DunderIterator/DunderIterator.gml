@@ -2,8 +2,8 @@ function DunderIterator() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Du
 	// An iterator iterator
 	
 	static __init__ = function(_getter, _keys_or_len) {
-		if (__dunder__.can_array(_keys_or_len)) {
-			__keys = __dunder__.as_array(_keys_or_len);
+		if (dunder.can_array(_keys_or_len)) {
+			__keys = dunder.as_array(_keys_or_len);
 			__max_index = array_length(__keys);
 			__advance = __advance_key;
 		}
@@ -12,7 +12,7 @@ function DunderIterator() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Du
 			__advance = __advance_index;
 		}
 		else {
-			throw __dunder__.init(DunderExceptionTypeError, "Can't use "+instanceof(_keys_or_len)+" for keys or length");
+			throw dunder.init(DunderExceptionTypeError, "Can't use "+instanceof(_keys_or_len)+" for keys or length");
 		}
 		
 		__getter = _getter;
@@ -22,7 +22,7 @@ function DunderIterator() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Du
 	// Iteration methods
 	static __next__ = function() {
 		if (index >= __max_index) {
-			throw __dunder__.init(DunderExceptionStopIteration);
+			throw dunder.init(DunderExceptionStopIteration);
 		}
 		
 		var _index_or_key = __advance();

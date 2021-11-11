@@ -3,7 +3,7 @@
   "isCompatibility": false,
   "parent": {
     "name": "Exceptions",
-    "path": "folders/Dunder/Exceptions.yy",
+    "path": "folders/Frameworks/Dunder/Exceptions.yy",
   },
   "resourceVersion": "1.0",
   "name": "DunderExceptionResourceNotFound",

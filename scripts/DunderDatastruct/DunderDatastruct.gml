@@ -15,12 +15,12 @@ function DunderDataStruct() : DunderBaseStruct() constructor {REGISTER_SUBTYPE(D
 					self[$ _key] = _value;
 				}
 				else {
-					throw __dunder__.init(DunderExceptionValueError, "Validation failed for "+string(_key));	
+					throw dunder.init(DunderExceptionValueError, "Validation failed for "+string(_key));	
 				}
 			}
 			else {
 				if (_field.is_required()) {
-					throw __dunder__.init(DunderExceptionValueError, "Field "+string(_key)+" required but not provided");	
+					throw dunder.init(DunderExceptionValueError, "Field "+string(_key)+" required but not provided");	
 				}
 				else {
 					delete _self[$ _key];

@@ -3,26 +3,26 @@ function DunderPath() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dunder
 	static separator = "/";
 	
 	static __init__ = function(_input) {
-		if (__dunder__.can_array(_input)) {
-			path_parts = __dunder__.init(DunderList, __dunder__.as_array(_input))
+		if (dunder.can_array(_input)) {
+			path_parts = dunder.init(DunderList, dunder.as_array(_input))
 		}
-		else if (__dunder__.can_string(_input)) {
-			var _string = __dunder__.as_string(_input);
-			path_parts = __dunder__.init(DunderList);
+		else if (dunder.can_string(_input)) {
+			var _string = dunder.as_string(_input);
+			path_parts = dunder.init(DunderList);
 			join(_string);
 		}
 		else if (is_undefined(_input)) {
-			path_parts = __dunder__.init(DunderList);
+			path_parts = dunder.init(DunderList);
 		}
 		else {
-			throw __dunder__.init(DunderExceptionTypeError, "Can't coerse type "+typeof(_struct)+" to "+__type_name__);
+			throw dunder.init(DunderExceptionTypeError, "Can't coerse type "+typeof(_struct)+" to "+__type_name__);
 		}
 	}
 	static __clone__ = function(_input=undefined) {
 		if (is_undefined(_input)) {
-			return __dunder__.init(self.__type__(), path_parts);
+			return dunder.init(self.__type__(), path_parts);
 		}
-		return __dunder__.init(self.__type__(), _input);
+		return dunder.init(self.__type__(), _input);
 	}
 	
 	// Representation methods
@@ -44,13 +44,15 @@ function DunderPath() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dunder
 	
 	// Path functions
 	static join = function(_path) {
-		var _string = __dunder__.init(DunderString, _path);
+		var _string = dunder.init(DunderString, _path);
 		_string.replace_all_in_place("\\", separator);
 		_string.replace_all_in_place("/", separator);
 		
-		var _array = _string.split(separator);
-		delete(_string);
-		path_parts.extend(_array);
+		var _list = _string.split(separator);
+		path_parts.extend(_list);
+		
+		dunder.cleanup(_list);
+		dunder.cleanup(_string);
 		return self;
 	}
 	
@@ -75,7 +77,7 @@ function DunderPath() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dunder
 	get_parent = function() {
 		// return new Path with parent
 		if (path_parts.__len__() == 0) {
-			throw __dunder__.init(DunderExceptionValueError, "Can't go up in path");
+			throw dunder.init(DunderExceptionValueError, "Can't go up in path");
 		}
 		
 		var _parent = __clone__()
@@ -93,7 +95,7 @@ function DunderPath() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dunder
 	up = function() {
 		// go up one, in place
 		if (path_parts.__len__() == 0) {
-			throw __dunder__.init(DunderExceptionValueError, "Can't go up in path");
+			throw dunder.init(DunderExceptionValueError, "Can't go up in path");
 		}
 		
 		path_parts.pop();

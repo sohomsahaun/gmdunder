@@ -1,7 +1,7 @@
 function DunderFile() : DunderDict() constructor { REGISTER_SUBTYPE(DunderFile);
 	// Handles a file
 	static __init__ = function(_input) {
-		path = __dunder__.as_string(_input);
+		path = dunder.as_string(_input);
 		__file_handle = -1;
 	}
 	static __cleanup__ = function() {
@@ -18,7 +18,7 @@ function DunderFile() : DunderDict() constructor { REGISTER_SUBTYPE(DunderFile);
 	static __string__ = function() {
 		var _buff = buffer_load(path);
 		if (_buff < 0) {
-			throw __dunder__.init(DunderExceptionFileError, "Could not read "+path);
+			throw dunder.init(DunderExceptionFileError, "Could not read "+path);
 			return;
 		}
 		var _str = buffer_read(_buff, buffer_text);
@@ -28,7 +28,7 @@ function DunderFile() : DunderDict() constructor { REGISTER_SUBTYPE(DunderFile);
 	static __array__ = function() {
 		var _fp = file_text_open_read(path);
 		if (_fp < 0) {
-			throw __dunder__.init(DunderExceptionFileError, "Could not read "+path);
+			throw dunder.init(DunderExceptionFileError, "Could not read "+path);
 			return;
 		}
 		
@@ -44,7 +44,7 @@ function DunderFile() : DunderDict() constructor { REGISTER_SUBTYPE(DunderFile);
 	
 	// Iteration methods
 	static __iter__ = function() {
-		return __dunder__.init(DunderFileIterator, path);
+		return dunder.init(DunderFileIterator, path);
 	}
 	
 	static flush = function() {
@@ -58,7 +58,7 @@ function DunderFile() : DunderDict() constructor { REGISTER_SUBTYPE(DunderFile);
 		if (__file_handle < 0) {
 			__file_handle = file_text_open_append(path);
 			if (__file_handle == -1) {
-				throw __dunder__.init(DunderExceptionFileError, "Could not open for writing "+path);
+				throw dunder.init(DunderExceptionFileError, "Could not open for writing "+path);
 			}
 		}
 	}
@@ -71,9 +71,9 @@ function DunderFile() : DunderDict() constructor { REGISTER_SUBTYPE(DunderFile);
 	
 	static write_line = function(_input) {
 		if (__file_handle < 0) {
-			throw __dunder__.init(DunderExceptionFileError, "Can't write, file handle not open");
+			throw dunder.init(DunderExceptionFileError, "Can't write, file handle not open");
 		}
-		var _string = __dunder__.as_string(_input);
+		var _string = dunder.as_string(_input);
 		file_text_write_string(__file_handle, _string);
 		file_text_writeln(__file_handle);
 	}

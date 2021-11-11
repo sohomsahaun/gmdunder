@@ -1,14 +1,14 @@
 function DunderFileIterator() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(DunderFileIterator);
 	// An file iterator that reads line by line
 	static __init__ = function(_input) {
-		var _path = __dunder__.as_string(_input);
+		var _path = dunder.as_string(_input);
 		if (not file_exists(_path)) {
-			throw __dunder__.init(DunderExceptionFileError, "File "+_path+" doesn't exist");
+			throw dunder.init(DunderExceptionFileError, "File "+_path+" doesn't exist");
 		}
 		
 		__fp = file_text_open_read(_path);
 		if (__fp < 0) {
-			throw __dunder__.init(DunderExceptionFileError, "Could not read "+path);
+			throw dunder.init(DunderExceptionFileError, "Could not read "+path);
 			return;
 		}
 		index = 0;
@@ -23,11 +23,11 @@ function DunderFileIterator() : DunderBaseStruct() constructor { REGISTER_SUBTYP
 		
 		if (file_text_eof(__fp)) {
 			file_text_close(__fp);
-			throw __dunder__.init(DunderExceptionStopIteration);
+			throw dunder.init(DunderExceptionStopIteration);
 		}
 		
 		var _line = file_text_readln(__fp);
-		last_line = __dunder__.init(DunderString, _line);
+		last_line = dunder.init(DunderString, _line);
 		return [last_line, index++];
 	}
 }

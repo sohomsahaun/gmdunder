@@ -16,12 +16,12 @@ function DunderSocket() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 		__connected = false;
 		__disconnected_time = 0;
 		__should_be_connected = false
-		__listener_instance = __dunder__.init_instance(__obj_dunder_socket_listener, 0, 0, 0, undefined,
+		__listener_instance = dunder.create_instance(__obj_dunder_socket_listener, 0, 0, 0, undefined,
 			[method(self, __step_handler), method(self, __async_networking_handler)]
 		);
 		
 		if (is_undefined(_logger)) {
-			logger = __dunder__.init(DunderLogger, "socket", {host:host, port:port})
+			logger = dunder.init(DunderLogger, "socket", {host:host, port:port})
 		}
 		else {
 			logger = _logger;	
@@ -100,7 +100,7 @@ function DunderSocket() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 	}
 	
 	static send_string = function(_input) {
-		var _string = __dunder__.as_string(_input);
+		var _string = dunder.as_string(_input);
 		var _len = string_byte_length(_string);
 		var _buff = buffer_create(_len, buffer_fixed, 1);
 		buffer_write(_buff, buffer_text, _string);

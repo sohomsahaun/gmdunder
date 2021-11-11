@@ -24,7 +24,7 @@
   "overriddenProperties": [],
   "parent": {
     "name": "Dunder",
-    "path": "folders/Dunder.yy",
+    "path": "folders/Frameworks/Dunder.yy",
   },
   "resourceVersion": "1.0",
   "name": "__obj_dunder_init_room",

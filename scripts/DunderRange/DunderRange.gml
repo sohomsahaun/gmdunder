@@ -2,20 +2,20 @@ function DunderRange() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dunde
 	// A range of values
 	static __init__ = function(_start=0, _stop=undefined, _step=1) {
 		if (not is_numeric(_start)) {
-			throw __dunder__.init(DunderExceptionValueError, "Start must be numeric");	
+			throw dunder.init(DunderExceptionValueError, "Start must be numeric");	
 		}
 		if (not is_numeric(_stop)) {
-			throw __dunder__.init(DunderExceptionValueError, "Stop must be numeric");	
+			throw dunder.init(DunderExceptionValueError, "Stop must be numeric");	
 		}
 		if (not is_numeric(_step)) {
-			throw __dunder__.init(DunderExceptionValueError, "Step must be numeric");	
+			throw dunder.init(DunderExceptionValueError, "Step must be numeric");	
 		}
 		
 		if (_stop == 0) {
-			throw __dunder__.init(DunderExceptionValueError, "Step can't be zero");	
+			throw dunder.init(DunderExceptionValueError, "Step can't be zero");	
 		}
 		if (sign(_stop-_start) != sign(_step)) {
-			throw __dunder__.init(DunderExceptionValueError, "Start and stop value doesn't match step");	
+			throw dunder.init(DunderExceptionValueError, "Start and stop value doesn't match step");	
 		}
 		
 		start = _start;
@@ -46,6 +46,6 @@ function DunderRange() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dunde
 	
 	// Iteration methods
 	static __iter__ = function() {
-		return __dunder__.init(DunderIterator, method(self, __getitem__), __len__());
+		return dunder.init(DunderIterator, method(self, __getitem__), __len__());
 	}
 }

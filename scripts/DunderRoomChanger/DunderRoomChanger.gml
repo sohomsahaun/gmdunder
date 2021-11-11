@@ -3,10 +3,18 @@ function DunderRoomChanger() : DunderInstance() constructor { REGISTER_SUBTYPE(D
 
 	static __init__ = function(_target_room, _callback) {
 		if (not room_exists(_target_room)) {
-			throw __dunder__.init(DunderExceptionResourceNotFound, "Could not find room id "+string(_target_room))	
+			throw dunder.init(DunderExceptionResourceNotFound, "Could not find room id "+string(_target_room))	
 		}
 		
-		var _inst = __dunder__.init_instance(__obj_dunder_room_changer, 0, 0, 0, undefined, [_callback]);
+		logger = __get_shared_logger__().bind_named("RoomChanger", {target_room: room_get_name(_target_room)});
+		
+		if (instance_exists(__obj_dunder_room_changer)) {
+			logger.warning("Another RoomChange is pending, this will override it");
+			instance_destroy(__obj_dunder_room_changer, false);
+		}
+		
+		var _inst = dunder.create_instance(__obj_dunder_room_changer, 0, 0, 0, undefined, [_callback, logger]);
+		logger.info("Room change prepared", {start_room: room_get_name(room)})
 		room_goto(_target_room);
 	}
 	static __repr__ = function() {

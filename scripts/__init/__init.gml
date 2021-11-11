@@ -1,1 +1,2 @@
-globalvar dunder;dunder = new Dunder();
+
+show_message(10);

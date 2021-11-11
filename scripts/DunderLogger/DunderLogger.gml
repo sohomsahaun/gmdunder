@@ -2,7 +2,7 @@ function DunderLogger() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 	// A Logger
 	static __init__ = function(_name="logger", _bound_values=undefined, _root_logger=undefined) {
 		name = _name;
-		bound_values = __dunder__.init(DunderDict, _bound_values);
+		bound_values = dunder.init(DunderDict, _bound_values, true);
 		
 		__json_logging = false;
 		__file = undefined;
@@ -42,7 +42,7 @@ function DunderLogger() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 		}
 		
 		if (__json_logging) {
-			var _datetime = __dunder__.init(DunderDateTime);
+			var _datetime = dunder.init(DunderDateTime);
 			var _struct = {
 				logName: name,
 				times: _datetime.__string__(),
@@ -57,11 +57,11 @@ function DunderLogger() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 			var _output = json_stringify(_struct);
 		}
 		else {
-			var _combined_str = __dunder__.reduce(_combined, "", function(_prev, _value, _key) {
+			var _combined_str = dunder.reduce(_combined, "", function(_prev, _value, _key) {
 				return _prev + _key + "=" + string(_value) + " ";
 			});
 		
-			var _datetime = __dunder__.init(DunderDateTime, undefined, "%Y-%m-%d %H:%M:%S");
+			var _datetime = dunder.init(DunderDateTime, undefined, "%Y-%m-%d %H:%M:%S");
 			var _output = _datetime.__string__()
 			delete _datetime;
 			switch(_level) {
@@ -72,7 +72,7 @@ function DunderLogger() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 				case LOG_DEBUG:		_output += " [debug  ]["; break;
 				default:			_output += " ["+_level+"][";
 			}
-			_output += __string_pad(name + "] " + string(_message), LOGGING_PAD_WIDTH) + _combined_str;
+			_output += __string_pad(name + "] " + string(_message), LOGGING_PAD_WIDTH) + " " + _combined_str;
 			if (not is_undefined(_stacktrace)) {
 				_combined_str += "stacktrace=" + string(_stacktrace) + " ";
 			}
@@ -105,7 +105,7 @@ function DunderLogger() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 	static debug = function(_message, _extras=undefined, _type=undefined) {
 		// Create a debug-level log message
 		if (LOGGING_DISABLED or not __enable_debug) return;
-		self.logger(LOG_DEBUG, _message, _extras, _type);	
+		logger(LOG_DEBUG, _message, _extras, _type);	
 	}
 	static info = function(_message, _extras=undefined, _type=undefined) {
 		// Create an info-level log message
@@ -151,7 +151,7 @@ function DunderLogger() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 		// logs a GML catch exception, or one of our own Exception structs
 		if (LOGGING_DISABLED) return;
 	
-		var _exception = __dunder__.exception(_input);
+		var _exception = dunder.exception(_input);
 		logger(_level, string(_exception.message), _extras, undefined, _exception.stacktrace);
 	}
 	
@@ -162,10 +162,12 @@ function DunderLogger() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 		// combine curretn bound values
 		
 		var _root_logger = is_undefined(__root_logger) ? self : __root_logger;
-		var _new_logger = __dunder__.init(self.__type__(), _name, _root_logger);
-		_new_logger.__json_logging /= __json_logging;
-		_new_logger.bound_values.update(bound_values);
-		_new_logger.bound_values.update(_extras);
+		var _new_logger = dunder.init(self.__type__(), _name, bound_values, _root_logger);
+		_new_logger.__json_logging = __json_logging;
+		
+		if (not is_undefined(_extras)) {
+			_new_logger.bound_values.update(_extras);
+		}
 		
 		if (not is_undefined(__sentry)) {
 			_new_logger.use_sentry(__sentry, __sentry_send_errors);
@@ -231,7 +233,7 @@ function DunderLogger() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 				_filename = __generate_log_filename();	
 			}
 			
-			__file = __dunder__.init(DunderFile, _filename);	
+			__file = dunder.init(DunderFile, _filename);	
 			__file.open_append();
 		}
 
@@ -260,7 +262,7 @@ function DunderLogger() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 	}
 	
 	__generate_log_filename = function() {
-		var _datetime = __dunder__.init(DunderDateTime, undefined, "%Y%m%d%H%M%S");	
+		var _datetime = dunder.init(DunderDateTime, undefined, "%Y%m%d%H%M%S");	
 		var _filename = "log_" + _datetime.__string__() + ".log";
 		delete _datetime;
 		return _filename;

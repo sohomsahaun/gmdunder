@@ -1,5 +1,6 @@
 function DunderBaseStruct() constructor {
 	// Base struct for all Dunder structs to inherit from
+	static __super_method_lookup__ = {}
 	
 	// Tracks inheritence
 	static __bases__ = [DunderBaseStruct]
@@ -7,17 +8,31 @@ function DunderBaseStruct() constructor {
 		// Constructs the inheritance array __bases__
 		var _new_base = [_constructor]
 		array_copy(_new_base, 1, __bases__, 0, array_length(__bases__));
+		__super_method_lookup__[$ _constructor] = {
+			__init__:__init__,
+			__cleanup__:__cleanup__,
+		}
 		return _new_base;
 	}
 	
+	static __super__= function(_constructor, _method="__init__") {
+		return __super_method_lookup__[$ _constructor][$ _method];
+	}
+	
 	// My personal copy of dunder, so I can run these myself
-	static __dunder__ = new DunderGlobal()
+	static dunder = new Dunder()
+	static __get_shared_logger__ = function() {
+		return dunder.get_shared_logger();
+	}
+	static __get_shared_env__ = function() {
+		return dunder.get_sared_env();
+	}
 	
 	// Creation methods
 	static __init__ = function() {}
 	static __cleanup__ = function() {}
 	static __clone__ = function() {
-		var _clone = __dunder__.init(self.__type__())
+		var _clone = dunder.init(self.__type__())
 		var _keys = variable_struct_get_names(self);
 		var _len = variable_struct_names_count(self);
 		for (var _i=0; _i<_len; _i++) {
@@ -92,7 +107,9 @@ function DunderBaseStruct() constructor {
 	}
 	static __is_same_type_as__ = function(_other) {
 		// Checks if I am the same as the other guy	
-		__dunder__.__throw_if_not_struct_with_method(_other, "__type__");
+		if (not is_struct(_other)) return false;
+		
+		dunder.__throw_if_not_struct_with_method(_other, "__type__");
 		return __type__() == _other.__type__();
 	}
 }

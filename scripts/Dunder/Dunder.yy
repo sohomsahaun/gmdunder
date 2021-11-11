@@ -3,7 +3,7 @@
   "isCompatibility": false,
   "parent": {
     "name": "Dunder",
-    "path": "folders/Dunder.yy",
+    "path": "folders/Frameworks/Dunder.yy",
   },
   "resourceVersion": "1.0",
   "name": "Dunder",

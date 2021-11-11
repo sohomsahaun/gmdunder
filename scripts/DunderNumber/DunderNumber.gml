@@ -2,67 +2,67 @@ function DunderNumber() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 	// A number wrapper
 	
 	static __init__ = function(_input) {
-		if (__dunder__.can_number(_input)) {
-			value = __dunder__.as_number(_input);
+		if (dunder.can_number(_input)) {
+			__value = dunder.as_number(_input);
 		}
 		else {
-			throw __dunder__.init(DunderExceptionTypeError, "Can't coerse type "+typeof(_input)+" to dict");
+			throw dunder.init(DunderExceptionTypeError, "Can't coerse type "+typeof(_input)+" to dict");
 		}
 	}	
 	static __clone__ = function(_input) {
 		if (is_undefined(_input)) {
-			return __dunder__.init(self.__type__(), value);
+			return dunder.init(self.__type__(), __value);
 		}
-		return __dunder__.init(self.__type__(), _input);
+		return dunder.init(self.__type__(), _input);
 	}
 
 	// Representation methods
 	static __string__ = function() {
-		return string(value);
+		return string(__value);
 	}
 	static __repr__ = function() {
 		return "<dunder '"+instanceof(self)+" value="+__string__()+">";
 	}
 	static __boolean__ = function() {
-		return bool(value);	
+		return bool(__value);	
 	}
 	static __number__ = function() {
-		return value;
+		return __value;
 	}
 	static toString = function() {
-		return string(value);	
+		return string(__value);	
 	}
 	
 	// Mathematical operators
 	static __add__ = function(_other) {
-		var _number = __dunder__.as_number(_other)
-		return __clone__(value + _number);
+		var _number = dunder.as_number(_other)
+		return __clone__(__value + _number);
 	}
 	static __subtract__ = function(_other) {
-		var _number = __dunder__.as_number(_other);
-		return __clone__(value - _number);
+		var _number = dunder.as_number(_other);
+		return __clone__(__value - _number);
 	}
 	static __rsubtract__ = function(_other) {
-		var _number = __dunder__.as_number(_other)
-		return __clone__(_number - value);
+		var _number = dunder.as_number(_other)
+		return __clone__(_number - __value);
 	}
 	static __multiply__ = function(_other) {
-		var _number = __dunder__.as_number(_other)
-		return __clone__(value * _number);
+		var _number = dunder.as_number(_other)
+		return __clone__(__value * _number);
 	}
 	static __divide__ = function(_other) {
-		var _number = __dunder__.as_number(_other)
-		return __clone__(value / _number);
+		var _number = dunder.as_number(_other)
+		return __clone__(__value / _number);
 	}
 	static __rdivide__ = function(_other) {
-		var _number = __dunder__.as_number(_other)
-		return __clone__(_number / value);
+		var _number = dunder.as_number(_other)
+		return __clone__(_number / __value);
 	}
 	static __equals__ = function(_other) {
-		if (not __dunder__.can_number(_other)) {
+		if (not dunder.can_number(_other)) {
 			return false;
 		}
-		return value == __dunder__.as_number(_other);
+		return __value == dunder.as_number(_other);
 	}
 	static __radd__ = __add__;
 	static __rmultiply__ = __multiply__;
@@ -82,12 +82,12 @@ function DunderNumber() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 	
 	// Number functions
 	static incr = function(_incr=1) {
-		value += _incr;
+		__value += _incr;
 	}
 	static incr_post = function() {
-		return value++;
+		return __value++;
 	}
 	static incr_pre = function() {
-		return ++value;
+		return ++__value;
 	}
 }

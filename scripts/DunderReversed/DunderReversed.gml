@@ -1,13 +1,13 @@
 function DunderReversed() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(DunderReversed);
 	// An object that reverses another object
 	static __init__ = function(_target) {
-		if (__dunder__.is_struct_with_method(_target, "__getitem__") and
-			__dunder__.is_struct_with_method(_target, "__len__")) {
+		if (dunder.is_struct_with_method(_target, "__getitem__") and
+			dunder.is_struct_with_method(_target, "__len__")) {
 			target = _target;
 			__target_len = target.__len__()
 		}
 		else {
-			throw __dunder__.init(DunderExceptionTypeError, "Provided struct does not have __getitem__ and __len__");	
+			throw dunder.init(DunderExceptionTypeError, "Provided struct does not have __getitem__ and __len__");	
 		}
 	}
 	static __repr__ = function() {
@@ -15,7 +15,7 @@ function DunderReversed() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Du
 	}
 	
 	static __iter__ = function() {
-		return __dunder__.init(DunderIterator, method(self, __getitem__), __target_len);
+		return dunder.init(DunderIterator, method(self, __getitem__), __target_len);
 	}
 	
 	static __len__ = function() {

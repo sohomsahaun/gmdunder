@@ -5,7 +5,7 @@ function DunderException() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(D
 	static __human_readable_name = "Exception";
 	
 	static __init__ = function(_msg="") {
-		message = __dunder__.as_string(_msg);
+		message = dunder.as_string(_msg);
 		stacktrace = debug_get_callstack();
 		// pops two values off call stack, one is this init, the other is porbably Dunder().init
 		array_delete(stacktrace, 0, 2);

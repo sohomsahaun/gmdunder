@@ -3,7 +3,7 @@
   "isCompatibility": false,
   "parent": {
     "name": "Extensions",
-    "path": "folders/Dunder/Extensions.yy",
+    "path": "folders/Frameworks/Dunder/Extensions.yy",
   },
   "resourceVersion": "1.0",
   "name": "DunderUlid",
