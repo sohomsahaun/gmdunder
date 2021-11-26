@@ -32,6 +32,9 @@ function DunderNumber() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 	static toString = function() {
 		return string(__value);	
 	}
+	static as_string = __string__;
+	static as_boolean = __boolean__;
+	static as_number = __number__;
 	
 	// Mathematical operators
 	static __add__ = function(_other) {

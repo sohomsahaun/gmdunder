@@ -1,6 +1,6 @@
 function DunderUlid() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(DunderUlid);
 	// A range of __values
-	static __rng = dunder.init(DunderRng);
+	static __rng = dunder.init(DunderRngLcg);
 	static __crockford_alphabet = [
 		"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A",
 		"B", "C", "D", "E", "F", "G", "H", "J", "K", "M", "N",
@@ -12,38 +12,7 @@ function DunderUlid() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dunder
 		static __rand80_low40 = 0;
 		static __rand80_high40 = 0;
 	
-		if (dunder.can_array(_input)) {
-			var _array = dunder.as_array(_input);
-			var _len = array_length(_array);
-			if (_len < 3) {
-				throw dunder.init(DunderExceptionValueError, "Can't coerse array to Ulid, not enough values");
-			}
-			
-			if (_array[0] < 0 or _array[0] > 0xffffffff or
-				_array[1] < 0 or _array[1] > 0xffffffff or
-				_array[2] < 0 or _array[2] > 0xffffffffff) {
-				throw dunder.init(DunderExceptionValueError, "Can't coerse array to Ulid, format incorrect");
-			}
-			__values = _input;
-		}
-		else if (dunder.can_string(_input)) {
-			var _string = dunder.as_string(_input);
-			if (string_length(_string) == 26) {
-				__values = [
-					__convert_crockford_base32_to_int(string_copy(_string, 19, 8)),
-					__convert_crockford_base32_to_int(string_copy(_string, 11, 8)),
-					__convert_crockford_base32_to_int(string_copy(_string, 1, 10)),
-				];
-			}
-			// TODO: support UUID
-			else {
-				throw dunder.init(DunderExceptionValueError, "Can't coerse string to Ulid, format incorrect");
-			}
-		}
-		else if (not is_undefined(_input)) {
-			throw dunder.init(DunderExceptionTypeError, "Can't coerse type "+typeof(_input)+" to Ulid");
-		}
-		else {
+		if (is_undefined(_input)) {
 			// get time
 			var _prev_timezone = date_get_timezone()
 			date_set_timezone(timezone_utc);
@@ -74,7 +43,38 @@ function DunderUlid() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dunder
 
 			// rest timezone
 			date_set_timezone(_prev_timezone);
-			__prev_unix = _unix;
+			__prev_unix = _unix;	
+		}
+		else if (dunder.can_array(_input)) {
+			var _array = dunder.as_array(_input);
+			var _len = array_length(_array);
+			if (_len < 3) {
+				throw dunder.init(DunderExceptionValueError, "Can't coerse array to Ulid, not enough values");
+			}
+			
+			if (_array[0] < 0 or _array[0] > 0xffffffff or
+				_array[1] < 0 or _array[1] > 0xffffffff or
+				_array[2] < 0 or _array[2] > 0xffffffffff) {
+				throw dunder.init(DunderExceptionValueError, "Can't coerse array to Ulid, format incorrect");
+			}
+			__values = _input;
+		}
+		else if (dunder.can_string(_input)) {
+			var _string = dunder.as_string(_input);
+			if (string_length(_string) == 26) {
+				__values = [
+					__convert_crockford_base32_to_int(string_copy(_string, 19, 8)),
+					__convert_crockford_base32_to_int(string_copy(_string, 11, 8)),
+					__convert_crockford_base32_to_int(string_copy(_string, 1, 10)),
+				];
+			}
+			// TODO: support UUID
+			else {
+				throw dunder.init(DunderExceptionValueError, "Can't coerse string to Ulid, format incorrect");
+			}
+		}
+		else {
+			throw dunder.init(DunderExceptionTypeError, "Can't coerse type "+typeof(_input)+" to Ulid");
 		}
 	}
 	
@@ -97,6 +97,7 @@ function DunderUlid() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dunder
 	static toString = function() {
 		return __string__();
 	}
+	static as_string = __string__;
 	
 	// Mathematical operators
 	static __equals__ = function(_other) {

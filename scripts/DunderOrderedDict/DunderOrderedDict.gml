@@ -29,6 +29,7 @@ function DunderOrderedDict() : DunderDict() constructor { REGISTER_SUBTYPE(Dunde
 		}
 		return _array;
 	}
+	static as_array = __array__;
 
 	// Mathematical operators
 	static __add__ = function(_other) {
@@ -70,10 +71,10 @@ function DunderOrderedDict() : DunderDict() constructor { REGISTER_SUBTYPE(Dunde
 	
 	// Dict methods
 	static keys = function() {
-		return dunder.init(DunderList, __order);
+		return dunder.init_list(__order);
 	}
 	static items = function() {
-		return dunder.init(DunderList, __array__);	
+		return dunder.init_list(__array__);	
 	}
 	static values = function() {
 		var _len = array_length(__order);
@@ -81,7 +82,7 @@ function DunderOrderedDict() : DunderDict() constructor { REGISTER_SUBTYPE(Dunde
 		for (var _i=0; _i<_len; _i++) {
 			_array[_i] = __values[$ __order[_i]];
 		}
-		return dunder.init(DunderList, _array);
+		return dunder.init_list(_array);
 	}
 	static update = function(_input) {
 		if (__is_same_type_as__(_input)) {

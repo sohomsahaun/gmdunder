@@ -8,14 +8,17 @@ function DunderString() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 			if (dunder.is_struct_with_method(_input, "__string__")) {
 				__value += _input.__string__();
 			}
-			else {
+			else if (is_string(argument[_i])) {
+				__value += argument[_i];
+			}
+			else if (not is_undefined(argument[_i])) {
 				__value += string(argument[_i]);
 			}
 		}
 	}	
 	static __clone__ = function(_input) {
 		if (is_undefined(_input)) {
-			return dunder.init(self.__type__(), values);
+			return dunder.init(self.__type__(), __value);
 		}
 		return dunder.init(self.__type__(), _input);
 	}
@@ -40,6 +43,9 @@ function DunderString() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 	static toString = function() {
 		return __value;	
 	}
+	static as_string = __string__;
+	static as_boolean = __boolean__;
+	static as_array = __array__;
 	
 	// Mathematical operators
 	static __add__ = function(_other) {
@@ -154,9 +160,16 @@ function DunderString() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 		__value = string_replace_all(__value, _substr, _newstr);
 		return __value
 	}
+	static replace_in_place = function(_substr, _newstr) {
+		__value = string_replace(__value, _substr, _newstr);
+		return __value
+	}
+	static append = function(_str) {
+		__value += dunder.as_string(_str);	
+	}
 	
 	static split = function(_seperator, _max_times=undefined) {
-		var _list = dunder.init(DunderList);
+		var _list = dunder.init_list();
 		var _len = string_length(__value);
 		var _last_pos = 0;
 		var _separator_len = string_length(_seperator);
@@ -200,34 +213,49 @@ function DunderString() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 	}
 	
 	static trim = function() {
-		var _str = ltrim();
-		var _len = string_length(_str);
-		for (var _i=_len-1; _i>=0; _i--) {
-			if (not __is_whitespace(string_char_at(_str, _i+1))) {
-				break;
-			}
-		}
-		return string_copy(_str, 1, _i+1);
+		var _copy = __clone__();
+		_copy.trim_in_place();
+		return _copy;
 	}
 	
 	static ltrim = function() {
+		var _copy = __clone__();
+		_copy.ltrim_in_place();
+		return _copy;
+	}
+		
+	static rtrim = function() {
+		var _copy = __clone__();
+		_copy.rtrim_in_place();
+		return _copy;
+	}
+	
+	static trim_in_place = function() {
+		ltrim_in_place();
+		rtrim_in_place();
+		return self;
+	}
+	
+	static ltrim_in_place = function() {
 		var _len = string_length(__value);
 		for (var _i=0; _i<_len; _i++) {
 			if (not __is_whitespace(string_char_at(__value, _i+1))) {
 				break;
 			}
 		}
-		return string_delete(__value, 1, _i);
+		__value = string_delete(__value, 1, _i);
+		return self;
 	}
 	
-	static rtrim = function() {
+	static rtrim_in_place = function() {
 		var _len = string_length(__value);
 		for (var _i=_len-1; _i>=0; _i--) {
 			if (not __is_whitespace(string_char_at(__value, _i+1))) {
 				break;
 			}
 		}
-		return string_copy(__value, 1, _i+1);
+		__value = string_copy(__value, 1, _i+1);
+		return self;
 	}
 
 	static from_file = function(_input) {

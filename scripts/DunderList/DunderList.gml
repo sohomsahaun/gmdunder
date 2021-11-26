@@ -1,6 +1,6 @@
 function DunderList() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(DunderList);
 	// A list wrapper
-	static __rng = dunder.init(DunderRng);
+	static __rng = dunder.init(DunderRngLcg);
 
 	// Initializer
 	static __init__ = function(_input, _copy=false) {
@@ -73,9 +73,12 @@ function DunderList() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dunder
 	static __array__ = function() {
 		return __values;
 	}
-	static __bool__ = function() {
+	static __boolean__ = function() {
 		return array_length(__values) > 0;
 	}
+	static as_string = __string__;
+	static as_boolean = __boolean__;
+	static as_array = __array__;
 	
 	// Structure methods
 	static __len__ = function() {
@@ -95,7 +98,7 @@ function DunderList() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dunder
 		if (_len == 0) {
 			throw dunder.init(DunderExceptionIndexError, "Index "+string(_index)+" out of range (string is empty)");
 		}
-		if (_index <= -_len or _index >= _len) {
+		if (_index < -_len or _index >= _len) {
 			throw dunder.init(DunderExceptionIndexError, "Index "+string(_index)+" out of range (0-"+string(_len-1)+")");
 		}
 		_index = __wrap_index(_index);
@@ -200,37 +203,33 @@ function DunderList() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dunder
 			__values[@ _j] = _left;
 		}
 	}
-	static slice = function(_start=0, _stop=-1, _step=1) {
+	static slice = function(_start=0, _stop=undefined, _step=1) {
 		_start = __wrap_index(_start);
-		_stop = __wrap_index(_stop);
 		
-		if (not is_numeric(_start)) {
-			throw dunder.init(DunderExceptionValueError, "Start must be numeric");	
+		if (is_undefined(_stop)) {
+			var _range = dunder.init(DunderRange, _start, len(), _step);
 		}
-		if (not is_numeric(_stop)) {
-			throw dunder.init(DunderExceptionValueError, "Stop must be numeric");	
+		else {
+			_stop = __wrap_index(_stop);
+			var _range = dunder.init(DunderRange, _start, _stop, _step);
 		}
-		if (not is_numeric(_step)) {
-			throw dunder.init(DunderExceptionValueError, "Step must be numeric");	
-		}
-
-		var _range = dunder.init(DunderRange, _start, _stop, _step);
+		
 		var _result = dunder.map(_range, method(self, __getitem__));
 		delete _range;
 		return _result;
 	}
 	static join = function(_separator=",") {
-		var _str = "";
+		var _str = dunder.init_string();
 		var _len = array_length(__values);
 		for (var _i=0; _i<_len; _i+=1) {
 			if (_i == 0) {
-				_str += dunder.as_string(__values[_i]);	
+				_str.append(__values[_i]);	
 			}
 			else {
-				_str += _separator + dunder.as_string(__values[_i]);
+				_str.append(_separator + dunder.as_string(__values[_i]));
 			}
 		}
-		return _str;	
+		return _str;
 	}
 	static clear = function() {
 		__values = [];	

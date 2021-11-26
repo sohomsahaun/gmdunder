@@ -4,15 +4,15 @@ function DunderPath() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dunder
 	
 	static __init__ = function(_input) {
 		if (dunder.can_array(_input)) {
-			path_parts = dunder.init(DunderList, dunder.as_array(_input))
+			path_parts = dunder.init_list(dunder.as_array(_input))
 		}
 		else if (dunder.can_string(_input)) {
 			var _string = dunder.as_string(_input);
-			path_parts = dunder.init(DunderList);
+			path_parts = dunder.init_list();
 			join(_string);
 		}
 		else if (is_undefined(_input)) {
-			path_parts = dunder.init(DunderList);
+			path_parts = dunder.init_list();
 		}
 		else {
 			throw dunder.init(DunderExceptionTypeError, "Can't coerse type "+typeof(_struct)+" to "+__type_name__);
@@ -27,13 +27,13 @@ function DunderPath() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dunder
 	
 	// Representation methods
 	static __string__ = function() {
-		return path_parts.join(separator);
+		return path_parts.join(separator).__string__();
 	}
 	static __repr__ = function() {
 		return "<dunder '"+instanceof(self)+" path='"+path_parts.__string__()+"'>";
 	}
 	static __boolean__ = function() {
-		return path_parts.__bool__();	
+		return path_parts.__boolean__();	
 	}
 	static __array__ = function() {
 		return path_parts.__array__();
@@ -41,18 +41,21 @@ function DunderPath() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dunder
 	static toString = function() {
 		return __string__();	
 	}
+	static as_string = __string__;
+	static as_boolean = __boolean__;
+	static as_array = __array__;
 	
 	// Path functions
 	static join = function(_path) {
-		var _string = dunder.init(DunderString, _path);
+		var _string = dunder.init_string(_path);
 		_string.replace_all_in_place("\\", separator);
 		_string.replace_all_in_place("/", separator);
 		
 		var _list = _string.split(separator);
 		path_parts.extend(_list);
 		
-		dunder.cleanup(_list);
-		dunder.cleanup(_string);
+		_list.cleanup();
+		_string.cleanup();
 		return self;
 	}
 	

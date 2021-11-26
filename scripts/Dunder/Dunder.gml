@@ -7,18 +7,23 @@ function Dunder() constructor {
 	}
 	
 	// ******
-	// ****** Shared resources (lazy enitialize shared objects
+	// ****** Shared resources (lazy enitialize shared objects)
 	// ******
 	static shared = {
 		logger: undefined,
 		env: undefined,
+		broker: undefined,
 	};
 	
 	static get_shared_logger = function() {
 		if (is_undefined(shared.logger)) {
-			shared.logger = init(DunderLogger, "Dunder");
+			shared.logger = init(DunderLogger, "Root");
 		}
 		return shared.logger;
+	}
+	
+	static bind_named_logger = function(_name, _extras) {
+		return get_shared_logger().bind_named(_name, _extras);	
 	}
 	
 	static get_shared_env = function() {
@@ -26,6 +31,13 @@ function Dunder() constructor {
 			shared.env = init(DunderEnv);
 		}
 		return shared.env;
+	}
+	
+	static get_shared_broker = function() {
+		if (is_undefined(shared.broker)) {
+			shared.broker = init(DunderMessageBroker);
+		}
+		return shared.broker;
 	}
 		
 	static on_game_start = function(_first_room_callback) {
@@ -47,41 +59,31 @@ function Dunder() constructor {
 	// ******
 	
 	static init = function(_type, _values) {
-		// Tries to create an object that has an __init__ dunder
-		if (is_numeric(_type) and script_exists(_type)) {
-			var _struct = new _type()
+		var _struct = new _type()
 			
-			if (not is_struct_with_method(_struct, "__init__")) {
-				throw init(DunderExceptionNoMethod, "Struct "+instanceof(_struct)+" does not have an __init__ method");
-			}
-			
-			// we're doing this pyramid of doom because gamemaker has no string_execute_ext for methods
-			switch(argument_count) {
-				case  1: _struct.__init__(); break;
-				case  2: _struct.__init__(_values); break;
-				case  3: _struct.__init__(_values, argument[2]); break;
-				case  4: _struct.__init__(_values, argument[2], argument[3]); break;
-				case  5: _struct.__init__(_values, argument[2], argument[3], argument[4]); break;
-				case  6: _struct.__init__(_values, argument[2], argument[3], argument[4], argument[5]); break;
-				case  7: _struct.__init__(_values, argument[2], argument[3], argument[4], argument[5], argument[6]); break;
-				case  8: _struct.__init__(_values, argument[2], argument[3], argument[4], argument[5], argument[6], argument[7]); break;
-				case  9: _struct.__init__(_values, argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8]); break;
-				case 10: _struct.__init__(_values, argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9]); break;
-				case 11: _struct.__init__(_values, argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10]); break;
-				case 12: _struct.__init__(_values, argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11]); break;
-				case 13: _struct.__init__(_values, argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11], argument[12]); break;
-				case 14: _struct.__init__(_values, argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11], argument[12], argument[13]); break;
-				case 15: _struct.__init__(_values, argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11], argument[12], argument[13], argument[14]); break;
-				case 16: _struct.__init__(_values, argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11], argument[12], argument[13], argument[14], argument[15]); break;
-				case 17: _struct.__init__(_values, argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11], argument[12], argument[13], argument[14], argument[15], argument[16]); break;
-				default: throw init(DunderExceptionBadArgument, "Init can't accept more than 16 extra arguments");
-			}
-			
-			return _struct;
+		// we're doing this pyramid of doom because gamemaker has no string_execute_ext for methods
+		switch(argument_count) {
+			case  1: _struct.__init__(); break;
+			case  2: _struct.__init__(_values); break;
+			case  3: _struct.__init__(_values, argument[2]); break;
+			case  4: _struct.__init__(_values, argument[2], argument[3]); break;
+			case  5: _struct.__init__(_values, argument[2], argument[3], argument[4]); break;
+			case  6: _struct.__init__(_values, argument[2], argument[3], argument[4], argument[5]); break;
+			case  7: _struct.__init__(_values, argument[2], argument[3], argument[4], argument[5], argument[6]); break;
+			case  8: _struct.__init__(_values, argument[2], argument[3], argument[4], argument[5], argument[6], argument[7]); break;
+			case  9: _struct.__init__(_values, argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8]); break;
+			case 10: _struct.__init__(_values, argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9]); break;
+			case 11: _struct.__init__(_values, argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10]); break;
+			case 12: _struct.__init__(_values, argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11]); break;
+			case 13: _struct.__init__(_values, argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11], argument[12]); break;
+			case 14: _struct.__init__(_values, argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11], argument[12], argument[13]); break;
+			case 15: _struct.__init__(_values, argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11], argument[12], argument[13], argument[14]); break;
+			case 16: _struct.__init__(_values, argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11], argument[12], argument[13], argument[14], argument[15]); break;
+			case 17: _struct.__init__(_values, argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11], argument[12], argument[13], argument[14], argument[15], argument[16]); break;
+			default: throw init(DunderExceptionBadArgument, "Init can't accept more than 16 extra arguments");
 		}
-		else {
-			throw init(DunderExceptionResourceNotFound, "Could not find dunder struct constructor "+string(_type));
-		}
+			
+		return _struct;
 	}
 	
 	static cleanup = function(_struct) {
@@ -128,26 +130,27 @@ function Dunder() constructor {
 	}
 	
 	static init_string  = function(_value) {
-			// we're doing this pyramid of doom because gamemaker has no string_execute_ext for methods
-			switch(argument_count) {
-				case  1: return init(DunderString, _value);
-				case  2: return init(DunderString, _value, argument[1]);
-				case  3: return init(DunderString, _value, argument[1], argument[2]);
-				case  4: return init(DunderString, _value, argument[1], argument[2], argument[3]);
-				case  5: return init(DunderString, _value, argument[1], argument[2], argument[3], argument[4]);
-				case  6: return init(DunderString, _value, argument[1], argument[2], argument[3], argument[4], argument[5]);
-				case  7: return init(DunderString, _value, argument[1], argument[2], argument[3], argument[4], argument[5], argument[6]);
-				case  8: return init(DunderString, _value, argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7]);
-				case  9: return init(DunderString, _value, argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8]);
-				case 10: return init(DunderString, _value, argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9]);
-				case 11: return init(DunderString, _value, argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10]);
-				case 12: return init(DunderString, _value, argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11]);
-				case 13: return init(DunderString, _value, argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11], argument[12]);
-				case 14: return init(DunderString, _value, argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11], argument[12], argument[13]);
-				case 15: return init(DunderString, _value, argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11], argument[12], argument[13], argument[14]);
-				case 16: return init(DunderString, _value, argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11], argument[12], argument[13], argument[14], argument[15]);
-				default: throw init(DunderExceptionBadArgument, "Init can't accept more than 16 arguments");
-			}
+		// we're doing this pyramid of doom because gamemaker has no string_execute_ext for methods
+		switch(argument_count) {
+			case  0: return init(DunderString);
+			case  1: return init(DunderString, _value);
+			case  2: return init(DunderString, _value, argument[1]);
+			case  3: return init(DunderString, _value, argument[1], argument[2]);
+			case  4: return init(DunderString, _value, argument[1], argument[2], argument[3]);
+			case  5: return init(DunderString, _value, argument[1], argument[2], argument[3], argument[4]);
+			case  6: return init(DunderString, _value, argument[1], argument[2], argument[3], argument[4], argument[5]);
+			case  7: return init(DunderString, _value, argument[1], argument[2], argument[3], argument[4], argument[5], argument[6]);
+			case  8: return init(DunderString, _value, argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7]);
+			case  9: return init(DunderString, _value, argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8]);
+			case 10: return init(DunderString, _value, argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9]);
+			case 11: return init(DunderString, _value, argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10]);
+			case 12: return init(DunderString, _value, argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11]);
+			case 13: return init(DunderString, _value, argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11], argument[12]);
+			case 14: return init(DunderString, _value, argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11], argument[12], argument[13]);
+			case 15: return init(DunderString, _value, argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11], argument[12], argument[13], argument[14]);
+			case 16: return init(DunderString, _value, argument[1], argument[2], argument[3], argument[4], argument[5], argument[6], argument[7], argument[8], argument[9], argument[10], argument[11], argument[12], argument[13], argument[14], argument[15]);
+			default: throw init(DunderExceptionBadArgument, "Init can't accept more than 16 arguments");
+		}
 	}
 	
 	static init_dict = function(_values, _copy=false) {
@@ -157,7 +160,6 @@ function Dunder() constructor {
 	static init_list = function(_values, _copy=false) {
 		return init(DunderList, _values, _copy);
 	}
-	
 	
 	// ******
 	// ****** Representation and conversion to GML types
@@ -301,11 +303,9 @@ function Dunder() constructor {
 	// ******
 	
 	static len = function(_struct) {
-		__throw_if_not_struct_with_method(_struct, "__len__");
 		return _struct.__len__();
 	}
 	static contains = function(_struct, _value) {
-		__throw_if_not_struct_with_method(_struct, "__contains__");
 		return _struct.__contains__(_value);
 	}
 	static get = function(_struct, _index_or_key) {
@@ -351,24 +351,25 @@ function Dunder() constructor {
 	// ******
 	
 	static iter = function(_input) {
-		if (is_array(_input)) {
-			var _struct = init(DunderList, _input);
-		}
-		else if (is_struct(_input) and not is_dunder_struct(_input)) {
-			var _struct = init(DunderDict, _input);	
-		}
-		else {
+		if (is_struct_with_method(_input, "__iter__")) {
 			var _struct = _input;
 		}
+		else if (is_struct(_input)) {
+			var _struct = init(DunderDict, _input);	
+		}
+		else if (is_array(_input)) {
+			var _struct = init(DunderList, _input);
+		}
+		else {
+			throw init(DunderExceptionNoMethod, "Struct "+instanceof(_struct)+" does not have a __removeitem__ or __removeattr__ method");	
+		}
 		
-		__throw_if_not_struct_with_method(_struct, "__iter__");
 		var _iter = _struct.__iter__();
 		__throw_if_not_struct_with_method(_iter, "__next__");
 		return _iter;
 	}
 	
 	static next = function(_iterator) {
-		__throw_if_not_struct_with_method(_iterator, "__next__");
 		return _iterator.__next__();
 	}
 	
@@ -385,7 +386,7 @@ function Dunder() constructor {
 					delete _iter;
 					return;
 				}
-				throw exception(_err)
+				rethrow(_err)
 			}
 		}
 	}
@@ -407,7 +408,7 @@ function Dunder() constructor {
 					delete _iter_b;
 					return;
 				}
-				throw exception(_err)
+				rethrow(_err)
 			}
 		}
 	}
@@ -426,7 +427,30 @@ function Dunder() constructor {
 					delete _iter;
 					return init_list(_array);
 				}
-				throw exception(_err)
+				rethrow(_err)
+			}
+		}
+	}
+	
+	static map_struct = function(_input, _func) {
+		var _iter = iter(_input);
+		
+		var _struct = {};
+		while(true) {
+			try {
+				var _pair = _iter.__next__();
+				var _result = _func(_pair[0], _pair[1]);
+				
+				if (is_array(_result)) {
+					_struct[$ _result[0]] = _result[1];
+				}
+			}
+			catch (_err) {
+				if (is_type(_err, DunderExceptionStopIteration)) {
+					delete _iter;
+					return _struct;
+				}
+				rethrow(_err)
 			}
 		}
 	}
@@ -447,7 +471,7 @@ function Dunder() constructor {
 					delete _iter;
 					return init_list(_array);
 				}
-				throw exception(_err)
+				rethrow(_err)
 			}
 		}
 	}
@@ -465,7 +489,7 @@ function Dunder() constructor {
 					delete _iter;
 					return _value;
 				}
-				throw exception(_err)
+				rethrow(_err)
 			}	
 		}
 	}
@@ -483,7 +507,7 @@ function Dunder() constructor {
 					delete _iter;
 					return true;
 				}
-				throw exception(_err)
+				rethrow(_err)
 			}
 			
 			if (not as_boolean(_pair[0])) {
@@ -505,7 +529,7 @@ function Dunder() constructor {
 					delete _iter;
 					return false;
 				}
-				throw exception(_err)
+				rethrow(_err)
 			}
 			
 			if (as_boolean(_pair[0])) {
@@ -514,8 +538,6 @@ function Dunder() constructor {
 			}
 		}
 	}
-
-	
 	
 	// ******
 	// ****** Type checking
@@ -577,6 +599,11 @@ function Dunder() constructor {
 	// ******
 	// ****** Exception handling
 	// ******
+	
+	static rethrow = function(_err) {
+		throw exception(_err)
+	}
+	
 	static register_exception_handler = function(_enable=true) {
 		exception_unhandled_handler(_enable ? __exception_handler : undefined)
 		return self;

@@ -31,9 +31,12 @@ function DunderSet() : DunderDict() constructor { REGISTER_SUBTYPE(DunderSet);
 	static __array__ = function() {
 		return variable_struct_get_names(__values);
 	}
-	static __bool__ = function() {
+	static __boolean__ = function() {
 		return variable_struct_names_count(__values) > 0;
 	}
+	static as_array = __array__;
+	static as_boolean = __boolean__;
+	
 	
 	// Mathematical operators
 	static __add__ = function(_other) {
@@ -83,8 +86,9 @@ function DunderSet() : DunderDict() constructor { REGISTER_SUBTYPE(DunderSet);
 	
 	// Set methods
 	static values = function() {
-		return dunder.init(DunderList, variable_struct_get_names(__values));
+		return dunder.init_list(variable_struct_get_names(__values));
 	}
+	static union = __add__;
 	static update = function(_input) {
 		var _list = dunder.as_array(_input);
 		var _len = array_length(_list);
@@ -92,6 +96,19 @@ function DunderSet() : DunderDict() constructor { REGISTER_SUBTYPE(DunderSet);
 			__values[$ _list[_i]] = true;
 		}
 		return self;
+	}
+	static intersection = function(_input) {
+		var _list = dunder.as_array(_input);
+		var _len = array_length(_list);
+		
+		var _new_set = __clone__();
+		for (var _i=0; _i<_len; _i++) {
+			var _value = _list[_i];
+			if (variable_struct_exists(__values, _value)) {
+				_new_set.set(_value);
+			}
+		}
+		return _new_set;
 	}
 	static clear = function() {
 		__values = {};	

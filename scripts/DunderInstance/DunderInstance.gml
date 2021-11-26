@@ -17,7 +17,7 @@ function DunderInstance() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Du
 	}
 	
 	static __run_create = function(_create_args) {
-		if (variable_instance_exists(instance, "__create__") and is_method(instance.__create__)) {
+		if (variable_instance_exists(instance, "__create__")) {
 			with (instance) {
 				if (is_array(_create_args)) {
 					// we're doing this pyramid of doom because gamemaker has no string_execute_ext for methods
@@ -50,10 +50,11 @@ function DunderInstance() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Du
 	}
 	
 	static __cleanup__ = function() {
-		if (instance != noone) {
+		if (instance_exists(instance)) {
 			instance_destroy(instance, false);
 		}
 	}
+	static cleanup = __cleanup__;
 	static __string__ = function() {
 		return object_get_name(instance.object_index)+"("+string(instance)+")";
 	}

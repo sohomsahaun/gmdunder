@@ -3,15 +3,15 @@ function DunderEnv() : DunderDict() constructor { REGISTER_SUBTYPE(DunderEnv);
 	
 	static __init__ = function(_logger=undefined) {
 		__values = {}
-		logger = __get_shared_logger__().bind_named("Env");
+		logger = dunder.bind_named_logger("Env");
 		
 		try {
 		    var _project_dir = get_project_dir();
 			load_env_from_file(_project_dir.join(".env"));
 		}
 		catch (_err) {
-			if (not dunder.is_subtype(_err, DunderExceptionFileError)) {
-				throw dunder.exception(_err);
+			if (not dunder.is_subtype(_err, DunderExceptionFileError) and not dunder.is_subtype(_err, DunderExceptionValueError)) {
+				dunder.rethrow(_err);
 			}
 		}
 	}
@@ -23,8 +23,8 @@ function DunderEnv() : DunderDict() constructor { REGISTER_SUBTYPE(DunderEnv);
 			var _parts = _line.split("=", 1);
 			
 			if (_parts.len() == 2) {
-				var _key = dunder.as_string(_parts.get(0).trim());
-				var _value = dunder.as_string(_parts.get(1).rtrim());
+				var _key = _parts.get(0).trim().as_string();
+				var _value = _parts.get(1).rtrim().as_string();
 				
 				logger.debug("Found env", {key:_key, value:_value});
 				set(_key, _value)
@@ -34,13 +34,22 @@ function DunderEnv() : DunderDict() constructor { REGISTER_SUBTYPE(DunderEnv);
 	
     static get_project_dir = function() {
 		// hack to try to get project directory
-        var _build_win = parameter_string(2);
-    	if (parameter_count() == 3 and parameter_string(1) == "-game" and _build_win != "") {
+		if (code_is_compiled()) {
+			var _game_location = parameter_string(0);	
+		}
+		else if (parameter_count() == 3 and parameter_string(1) == "-game") {
+			var _game_location = parameter_string(2);
+		}
+		else {
+			var _game_location = "";	
+		}
+		
+    	if (_game_location != "") {
     		// find path of the build.bff file
-    		var _path = dunder.init(DunderPath, _build_win).up().up();
+    		var _path = dunder.init(DunderPath, _game_location).up().up();
     		var _build = _path.join("build.bff");
     		if (_build.is_file()) {
-	    		var _struct = dunder.init(DunderDict).from_file(_build);
+	    		var _struct = dunder.init_dict().from_file(_build);
 	    		var _project_dir = dunder.init(DunderPath, _struct.get("projectDir", ""));
 	    		if (_project_dir.is_dir()) {
 	                return _project_dir;

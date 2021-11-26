@@ -1,8 +1,9 @@
+
 function DunderLogger() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(DunderLogger);
 	// A Logger
 	static __init__ = function(_name="logger", _bound_values=undefined, _root_logger=undefined) {
 		name = _name;
-		bound_values = dunder.init(DunderDict, _bound_values, true);
+		bound_values = dunder.init_dict(_bound_values, true);
 		
 		__json_logging = false;
 		__file = undefined;
@@ -61,7 +62,7 @@ function DunderLogger() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 				return _prev + _key + "=" + string(_value) + " ";
 			});
 		
-			var _datetime = dunder.init(DunderDateTime, undefined, "%Y-%m-%d %H:%M:%S");
+			var _datetime = dunder.init(DunderDateTime, undefined, "%Y-%m-%d %H:%M:%S.%f");
 			var _output = _datetime.__string__()
 			delete _datetime;
 			switch(_level) {
@@ -83,7 +84,7 @@ function DunderLogger() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 		
 		if (not is_undefined(__sentry)) {
 			if (__sentry_send_errors and _level == LOG_ERROR) {
-				__sentry.send_report(_level, _message, undefined, undefined, name, _combined, _stacktrace); 
+				__sentry.send_report(_level, _message, undefined, undefined, name, _combined.as_struct(), _stacktrace); 
 			}
 			else {
 				if (is_undefined(_type)) {
@@ -97,7 +98,7 @@ function DunderLogger() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 						_type = "default";	
 					}
 				}
-				__sentry.add_breadcrumb(name, _message, _combined, _level, _type);
+				__sentry.add_breadcrumb(name, _message, _combined.as_struct(), _level, _type);
 			}
 		}
 	}
@@ -221,7 +222,6 @@ function DunderLogger() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 		return _str;
 	}
 	
-
 	log_to_file = function(_filename=undefined, _auto_flush=false) {
 		if (LOGGING_DISABLED) return;
 		close_log()
@@ -233,8 +233,7 @@ function DunderLogger() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 				_filename = __generate_log_filename();	
 			}
 			
-			__file = dunder.init(DunderFile, _filename);	
-			__file.open_append();
+			__file = dunder.init(DunderFile, _filename).open("a");
 		}
 
 		return self;

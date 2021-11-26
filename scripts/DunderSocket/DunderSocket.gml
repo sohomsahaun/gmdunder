@@ -12,16 +12,14 @@ function DunderSocket() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 		disconnect_callback = undefined;
 		step_callback = undefined;
 		
-		socket = undefined;
+		socket = -1;
 		__connected = false;
 		__disconnected_time = 0;
 		__should_be_connected = false
-		__listener_instance = dunder.create_instance(__obj_dunder_socket_listener, 0, 0, 0, undefined,
-			[method(self, __step_handler), method(self, __async_networking_handler)]
-		);
+		__listener_instance = noone;
 		
 		if (is_undefined(_logger)) {
-			logger = dunder.init(DunderLogger, "socket", {host:host, port:port})
+			logger = dunder.bind_named_logger("Socket", {host:host, port:port})
 		}
 		else {
 			logger = _logger;	
@@ -33,13 +31,15 @@ function DunderSocket() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 		__listener_instance.__cleanup__();
 		delete __listener_instance;
 	}
+	static cleanup = __cleanup__;
 	
-	static __bool__ = function() {
+	static __boolean__ = function() {
 		return __connected;	
 	}
+	static boolean = __boolean__;
 	
 	// Socket functions
-	is_connected = function() {
+	static is_connected = function() {
 		return __connected;	
 	}
 	static set_packet_callback = function(_func) {
@@ -60,11 +60,21 @@ function DunderSocket() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 	}
 	
 	static connect = function() {
-		if (not is_undefined(socket)) {
+		if (socket >= 0) {
 			return;
 		}
 		socket = network_create_socket(socket_type);
-		network_set_config(network_config_connect_timeout, 1500);
+		if (socket < 0) {
+			logger.error("Could not create socket, not available");
+		}
+		
+		if (__listener_instance == noone) {
+			__listener_instance = dunder.create_instance(__obj_dunder_socket_listener, 0, 0, 0, undefined,
+				[method(self, __step_handler), method(self, __async_networking_handler)]
+			);
+		}
+		
+		network_set_config(network_config_connect_timeout, 5000);
 		network_set_config(network_config_use_non_blocking_socket, 1);
 		if (raw) {
 			network_connect_raw(socket, host, port);
@@ -74,21 +84,22 @@ function DunderSocket() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 		}
 		__should_be_connected = true;
 		__disconnected_time = 0;
+		logger.info("Connecting")
 	}
 
 	static disconnect = function() {
-		if (is_undefined(socket)) {
+		if (socket < 0) {
 			return;
 		}
-		
+		logger.info("Disconnecting")
 		network_destroy(socket);
-		socket = undefined;
+		socket = -1;
 		__should_be_connected = false;
 		__connected = false;
 	}
 	
 	static send_buffer = function(_buff, _size) {
-		if (not is_undefined(socket)) {
+		if (socket >= 0) {
 			if (raw) {
 				return network_send_raw(socket, _buff, _size);
 			}
@@ -117,6 +128,9 @@ function DunderSocket() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 		var _type = _async_load[? "type"];
 		
 		switch (_type) {
+			case network_type_connect:
+				show_debug_message(json_encode(_async_load))
+				break;
 			case network_type_non_blocking_connect:
 				// There seems to be a bug where a non-blocking connect will fire an async event that says "succeeded"
 				// 
@@ -135,7 +149,7 @@ function DunderSocket() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 
 			case network_type_disconnect:
 				__connected = false;
-					logger.info("Disconnected")
+				logger.info("Disconnected")
 				if (is_method(disconnect_callback)) {
 					disconnect_callback();
 				}
@@ -155,9 +169,10 @@ function DunderSocket() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 	static __step_handler = function() {
 		if (not __connected and __should_be_connected) {
 			__disconnected_time += 1;
-			if (__disconnected_time > game_get_speed(gamespeed_fps) * 2) {
+			if (__disconnected_time > game_get_speed(gamespeed_fps) * 5) {
 				__disconnected_time = 0;
 				logger.warning("Connection stale, reconnecting...")
+				disconnect();
 				connect();
 			}
 		}

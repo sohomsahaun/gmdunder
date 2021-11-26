@@ -33,4 +33,18 @@ function DunderDataStruct() : DunderBaseStruct() constructor {REGISTER_SUBTYPE(D
 	static field = function(_default_value=undefined, _default_factory=undefined, _validator=undefined) {
 		return init(DunderField, _default_value, _default_factory, _validator);	
 	}
+	
+	// validator factories
+	static is_string_between = function(_min_len, _max_len) {
+        return method({min_len: _min_len, max_len: _max_len}, function(_value) {
+            var _len = string_length(_value);
+            return is_string(_value) and  _len >= min_len and _len <= max_len;
+       });
+    }
+    
+    static is_number_between = function(_min_value, _max_value) {
+        return method({min_value: _min_value, max_value: _max_value}, function(_value) {
+            return is_numeric(_value) and  _value >= min_value and _value <= max_value;
+       });
+    }
 }

@@ -1,16 +1,27 @@
 function DunderDateTime() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(DunderDateTime);
 	// A Datetime object
-	static __init__ = function(_input=undefined, _format="%Y-%m-%dT%H:%M:%SZ", _timezone=timezone_utc) {
+	static __init__ = function(_input=undefined, _format="%Y-%m-%dT%H:%M:%S.%fZ", _timezone=timezone_utc) {
+		static offset_datetime = undefined;
+		static offset_timer = undefined;
+		
 		timezone = _timezone ?? date_get_timezone();
 		
 		if (is_undefined(_input)) {
 			var _list_timezone = date_get_timezone();
 			date_set_timezone(timezone);
-			datetime = date_current_datetime();
+			
+			// calculate time offsets, to allow us to get millisecond precision
+			if (is_undefined(offset_datetime)) {
+				offset_datetime = date_current_datetime();
+				offset_timer = get_timer();
+			}
+			
+			datetime = offset_datetime + (get_timer() - offset_timer)/86400000000;
 			date_set_timezone(_list_timezone);
 		}
 		else {
 			datetime = dunder.as_number(_input);
+			microseconds = 0;
 		}
 		
 		format = _format;
@@ -33,6 +44,7 @@ function DunderDateTime() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Du
 			format_table[$ "%m"] = month_pad;
 			format_table[$ "%d"] = day_pad;
 			format_table[$ "%e"] = day;
+			format_table[$ "%j"] = day_of_year_pad;
 			
 			format_table[$ "%l"] = hour;
 			format_table[$ "%H"] = hour_24_pad;
@@ -40,7 +52,8 @@ function DunderDateTime() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Du
 			format_table[$ "%M"] = minute_pad;
 			format_table[$ "%S"] = second_pad;
 			format_table[$ "%p"] = am_pm;
-			format_table[$ "%j"] = day_of_year_pad;
+			format_table[$ "%f"] = millisecond_pad;
+			
 			format_table[$ "%%"] = literal_percent;
 		}
 		
@@ -84,6 +97,7 @@ function DunderDateTime() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Du
 	static toString = function() {
 		return __string__();
 	}
+	static as_string = __string__;
 	
 	// Date functions
 	static set_format = function(_format) {
@@ -163,6 +177,9 @@ function DunderDateTime() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Du
 	static day = function() {
 		return string(date_get_day(datetime));
 	}
+	static day_of_year_pad = function() {
+		return __zero_pad_string(date_get_day_of_year(datetime), 3);
+	}
 	
 	static hour = function() {
 		return string(date_get_hour(datetime));
@@ -182,14 +199,16 @@ function DunderDateTime() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Du
 	static am_pm = function() {
 		return (date_get_hour(datetime) < 12 ? "AM" : "PM");
 	}
-	static day_of_year_pad = function() {
-		return __zero_pad_string(date_get_day_of_year(datetime), 3);
+	
+	
+	static millisecond_pad = function() {
+		return __zero_pad_string(floor(datetime * 86400000) mod 1000, 3);
 	}
 	static literal_percent = function() {
 		return "%";
 	}
 	
 	static __zero_pad_string = function(_number, _places) {
-		return string_replace(string_format(_number, _places, 0), " ", "0");
+		return string_replace_all(string_format(_number, _places, 0), " ", "0");
 	}
 }

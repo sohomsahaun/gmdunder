@@ -61,9 +61,12 @@ function DunderDict() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dunder
 		}
 		return _array;
 	}
-	static __bool__ = function() {
+	static __boolean__ = function() {
 		return variable_struct_names_count(__values) > 0;
 	}
+	static as_boolean = __boolean__;
+	static as_array = __array__;
+	static as_struct = __struct__;
 	
 	// Mathematical operators
 	static __add__ = function(_other) {
@@ -87,7 +90,7 @@ function DunderDict() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dunder
 		if (argument_count>1) { // default value
 			return argument[1];
 		}
-		throw dunder.init(DunderExceptionKeyError);
+		throw dunder.init(DunderExceptionKeyError, "Value doesn't exist");
 	}
 	static __setattr__ = function(_key, _value) {
 		variable_struct_set(__values, _key, _value);
@@ -100,7 +103,7 @@ function DunderDict() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dunder
 			variable_struct_remove(__values, _key);
 			return true;
 		}
-		throw dunder.init(DunderExceptionKeyError);
+		throw dunder.init(DunderExceptionKeyError, "Value doesn't exist");
 	}
 	static len = __len__;
 	static contains = __contains__;
@@ -116,10 +119,10 @@ function DunderDict() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dunder
 	
 	// Dict methods
 	static keys = function() {
-		return dunder.init(DunderList, variable_struct_get_names(__values));
+		return dunder.init_list(variable_struct_get_names(__values));
 	}
 	static items = function() {
-		return dunder.init(DunderList, __array__);	
+		return dunder.init_list(__array__);	
 	}
 	static values = function() {
 		var _keys = variable_struct_get_names(__values);
@@ -128,7 +131,7 @@ function DunderDict() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dunder
 		for (var _i=0; _i<_len; _i++) {
 			_array[_i] = __values[$ _keys[_i]];
 		}
-		return dunder.init(DunderList, _array);
+		return dunder.init_list(_array);
 	}
 	static update = function(_input) {
 		var _struct = dunder.as_struct(_input);

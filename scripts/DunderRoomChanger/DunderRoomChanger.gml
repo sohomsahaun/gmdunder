@@ -6,7 +6,7 @@ function DunderRoomChanger() : DunderInstance() constructor { REGISTER_SUBTYPE(D
 			throw dunder.init(DunderExceptionResourceNotFound, "Could not find room id "+string(_target_room))	
 		}
 		
-		logger = __get_shared_logger__().bind_named("RoomChanger", {target_room: room_get_name(_target_room)});
+		logger = dunder.bind_named_logger("RoomChanger", {target_room: room_get_name(_target_room)});
 		
 		if (instance_exists(__obj_dunder_room_changer)) {
 			logger.warning("Another RoomChange is pending, this will override it");

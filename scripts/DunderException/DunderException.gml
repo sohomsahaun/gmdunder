@@ -9,12 +9,13 @@ function DunderException() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(D
 		stacktrace = debug_get_callstack();
 		// pops two values off call stack, one is this init, the other is porbably Dunder().init
 		array_delete(stacktrace, 0, 2);
+		global.SENTRY_LAST_ERROR = self;
 	}
 	static __string__ = function() {
-		return __human_readable_name + ": " + string(message) + "\n" + string(stacktrace);
+		return __human_readable_name + ": " + message;
 	}
 	static __repr__ = function() {
-		return "<dunder '"+instanceof(self)+"' message='"+string(message)+"'>";
+		return "<dunder '"+instanceof(self)+"' message='"+message+"'>";
 	}
 	static toString = function() {
 		// This is gamemaker's default string function. This is needed because

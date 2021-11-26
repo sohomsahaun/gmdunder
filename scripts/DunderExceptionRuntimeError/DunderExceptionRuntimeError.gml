@@ -5,5 +5,6 @@ function DunderExceptionRuntimeError() : DunderException() constructor { REGISTE
 	static __init__ = function(_err) {
 		message = _err.message
 		stacktrace = _err.stacktrace
+		global.SENTRY_LAST_ERROR = self;
 	}
 }

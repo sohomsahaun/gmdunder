@@ -56,7 +56,7 @@ function DunderDefaultDict() : DunderDict() constructor { REGISTER_SUBTYPE(Dunde
 		if (argument_count>1) { // default value
 			return argument[1];
 		}
-		throw dunder.init(DunderExceptionKeyError);
+		throw dunder.init(DunderExceptionKeyError, "Value doesn't exist");
 	}
 	static __hasattr__ = function(_key) {
 		return true;

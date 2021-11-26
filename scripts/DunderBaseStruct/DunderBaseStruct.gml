@@ -20,13 +20,7 @@ function DunderBaseStruct() constructor {
 	}
 	
 	// My personal copy of dunder, so I can run these myself
-	static dunder = new Dunder()
-	static __get_shared_logger__ = function() {
-		return dunder.get_shared_logger();
-	}
-	static __get_shared_env__ = function() {
-		return dunder.get_sared_env();
-	}
+	static dunder = new Dunder();
 	
 	// Creation methods
 	static __init__ = function() {}
@@ -41,6 +35,7 @@ function DunderBaseStruct() constructor {
 		}
 		return _clone;
 	}
+	static cleanup = __cleanup__;
 	
 	// Representation methods
 	static __string__ = function() {
@@ -52,10 +47,11 @@ function DunderBaseStruct() constructor {
 	static __boolean__ = function() {
 		return bool(true);
 	}
+	static as_string = __string__;
+	static as_boolean = __boolean__;
 	// static __number__ = function()
 	// static __dict__ = function()
 	// static __array__ = function()
-	
 	
 	// Mathematical methods
 	//static __add__ = function(_other)
@@ -83,6 +79,10 @@ function DunderBaseStruct() constructor {
 	// Iteration methods
 	// static __iter__ = function()
 	// static __next__ = function()
+	
+	// Context manager methods
+	// static __enter__ = function()
+	// static __exit__ = function()
 	
 	// Type checking methods
 	static __type__ = function() {

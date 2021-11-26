@@ -1,6 +1,6 @@
 function DunderRange() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(DunderRange);
 	// A range of values
-	static __init__ = function(_start=0, _stop=undefined, _step=1) {
+	static __init__ = function(_start, _stop, _step=1) {
 		if (not is_numeric(_start)) {
 			throw dunder.init(DunderExceptionValueError, "Start must be numeric");	
 		}
@@ -11,10 +11,10 @@ function DunderRange() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dunde
 			throw dunder.init(DunderExceptionValueError, "Step must be numeric");	
 		}
 		
-		if (_stop == 0) {
+		if (_step == 0) {
 			throw dunder.init(DunderExceptionValueError, "Step can't be zero");	
 		}
-		if (sign(_stop-_start) != sign(_step)) {
+		if (_start != _stop and sign(_stop-_start) != sign(_step)) {
 			throw dunder.init(DunderExceptionValueError, "Start and stop value doesn't match step");	
 		}
 		
