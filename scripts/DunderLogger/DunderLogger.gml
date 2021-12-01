@@ -2,7 +2,7 @@
 function DunderLogger() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(DunderLogger);
 	// A Logger
 	static __init__ = function(_name="logger", _bound_values=undefined, _root_logger=undefined) {
-		name = _name;
+		name = dunder.as_string(_name);
 		bound_values = dunder.init_dict(_bound_values, true);
 		
 		__json_logging = false;

@@ -27,6 +27,9 @@ function DunderString() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 	static __string__ = function() {
 		return __value;
 	}
+	static __number__ = function() {
+		return real(__value);	
+	}
 	static __repr__ = function() {
 		return "<dunder '"+instanceof(self)+" value='"+__value+"'>";
 	}
@@ -44,6 +47,7 @@ function DunderString() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 		return __value;	
 	}
 	static as_string = __string__;
+	static as_number = __number__;
 	static as_boolean = __boolean__;
 	static as_array = __array__;
 	
@@ -51,6 +55,10 @@ function DunderString() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 	static __add__ = function(_other) {
 		var _string = dunder.as_string(_other)
 		return __clone__(__value + _string);
+	}
+	static __radd__ = function(_other) {
+		var _string = dunder.as_string(_other)
+		return __clone__(_string + __value);
 	}
 	static __multiply__ = function(_other) {
 		var _number = dunder.as_number(_other);
@@ -63,7 +71,6 @@ function DunderString() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 		return __value == dunder.as_string(_other);
 	}
 	
-	static __radd__ = __add__;
 	static __rmultiply__ = __multiply__;
 	static add = __add__;
 	static multiply = __multiply__;

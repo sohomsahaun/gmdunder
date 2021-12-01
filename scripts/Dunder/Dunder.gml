@@ -359,6 +359,9 @@ function Dunder() constructor {
 		if (is_struct_with_method(_input, "__iter__")) {
 			var _struct = _input;
 		}
+		else if (is_struct_with_method(_input, "__next__")) {
+			return _input;
+		}
 		else if (is_struct(_input)) {
 			var _struct = init(DunderDict, _input);	
 		}
@@ -389,28 +392,6 @@ function Dunder() constructor {
 			catch (_err) {
 				if (is_type(_err, DunderExceptionStopIteration)) {
 					delete _iter;
-					return;
-				}
-				rethrow(_err)
-			}
-		}
-	}
-	
-		
-	static foreach_zip = function(_input_a, _input_b, _func) {
-		var _iter_a = iter(_input_a);
-		var _iter_b = iter(_input_b);
-		
-		while(true) {
-			try {
-				var _pair_a = _iter_a.__next__();
-				var _pair_b = _iter_b.__next__();
-				_func(_pair_a[0], _pair_b[0], _pair_a[1], _pair_b[1]);
-			}
-			catch (_err) {
-				if (is_type(_err, DunderExceptionStopIteration)) {
-					delete _iter_a;
-					delete _iter_b;
 					return;
 				}
 				rethrow(_err)
@@ -499,6 +480,25 @@ function Dunder() constructor {
 		}
 	}
 	
+	static sum = function(_input) {
+		var _iter = iter(_input);
+		var _sum = 0;
+		
+		while(true) {
+			try {
+				var _pair = _iter.__next__();
+				_sum += _pair[0];
+			}
+			catch (_err) {
+				if (is_type(_err, DunderExceptionStopIteration)) {
+					delete _iter;
+					return _sum;
+				}
+				rethrow(_err)
+			}	
+		}
+	}
+	
 	
 	static all_ = function(_input) {
 		var _iter = iter(_input);
@@ -542,6 +542,23 @@ function Dunder() constructor {
 				return true;
 			}
 		}
+	}
+	
+	static zip = function() {
+		var _iterators = array_create(argument_count);
+		for (var _i=0; _i<argument_count; _i++) {
+			if (is_struct_with_method(argument[_i], "__iter__")) {
+				_iterators[_i] = argument[_i].__iter__();
+			}
+			else if (is_struct_with_method(argument[_i], "__next__")) {
+				_iterators[_i] = argument[_i];
+			}
+			else {
+				throw init(DunderExceptionValueError, "argument must be an iterator or iterable");
+			}
+		}
+		
+		return init(DunderZipIterator, _iterators);
 	}
 	
 	// ******

@@ -210,7 +210,10 @@ function DunderList() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dunder
 			var _range = dunder.init(DunderRange, _start, len(), _step);
 		}
 		else {
-			_stop = __wrap_index(_stop);
+			if (_stop < 0) {
+				_stop = __wrap_index(_stop);
+			}
+			_stop = clamp(_stop, 0, len());
 			var _range = dunder.init(DunderRange, _start, _stop, _step);
 		}
 		
