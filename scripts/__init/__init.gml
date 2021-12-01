@@ -1,16 +1,16 @@
 global.dunder = new Dunder();
 
 
-db = global.dunder.init(DunderIndexedDatabase);
-db.add_index_numeric("level")
+queue = global.dunder.init(DunderMinHeap);
+queue.insert("d", 345);
+queue.insert("a", 1);
+queue.insert("c", 234);
+queue.insert("b", 5);
 
-db.set("a", {level: 1})
-db.set("b", {level: 2})
-db.set("c", {level: 3})
-db.set("d", {level: 1})
-db.set("e", {level: 2})
-db.set("f", {level: 3})
+show_debug_message(queue);
 
-var _results = db.find({level: 2})
-
-show_message(_results);
+show_debug_message(queue.pop_min());
+show_debug_message(queue.pop_min());
+show_debug_message(queue.pop_min());
+show_debug_message(queue.pop_min());
+show_debug_message(queue.pop_min());

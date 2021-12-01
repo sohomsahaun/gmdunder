@@ -6,7 +6,7 @@
     "path": "folders/Frameworks/Dunder/Data Objects.yy",
   },
   "resourceVersion": "1.0",
-  "name": "DunderPriority",
+  "name": "DunderMaxHeap",
   "tags": [],
   "resourceType": "GMScript",
 }
