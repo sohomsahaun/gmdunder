@@ -84,6 +84,17 @@ function DunderFile() : DunderDict() constructor { REGISTER_SUBTYPE(DunderFile);
 		return dunder.init_string(_str);
 	}
 	
+	static read_json_as_struct = function(_decompress=false) {
+		var _buffer = read_buffer(_decompress);
+		var _str = buffer_read(_buffer, buffer_text);
+		buffer_delete(_buffer);
+		return json_parse(_str);
+	}
+	
+	static read_json_as_dict = function(_decompress=false) {
+		return dunder.init_dict(read_json_as_struct(_decompress));	
+	}
+	
 	static read_string_encrypted = function(_cypher_key, _decompress=false) {
 		var _buffer = read_buffer_encrypted(_cypher_key, _decompress);
 		var _str = buffer_read(_buffer, buffer_text);

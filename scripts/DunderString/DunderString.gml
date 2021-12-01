@@ -154,6 +154,10 @@ function DunderString() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 	static replace = function(_substr, _newstr) { return __clone__(string_replace(__value, _substr, _newstr)); }
 	static replace_all = function(_substr, _newstr) { return __clone__(string_replace_all(__value, _substr, _newstr)); }
 	static upper = function() { return __clone__(string_upper(__value)); }
+	static height = function() { return string_height(__value); }
+	static height_ext = function(_sep, _w) { return string_height_ext(__value, _sep, _w); }
+	static width = function() { return string_width(__value); }
+	static width_ext = function(_sep, _w) { return string_width_ext(__value, _sep, _w); }
 	
 	// String functions
 	static replace_all_in_place = function(_substr, _newstr) {
@@ -163,6 +167,12 @@ function DunderString() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 	static replace_in_place = function(_substr, _newstr) {
 		__value = string_replace(__value, _substr, _newstr);
 		return __value
+	}
+	static delete_in_place = function(_index, _count) {
+		__value = string_delete(__value, _index+1, _count);
+	}
+	static insert_in_place = function(_substr, _index) {
+		__value = string_insert(_substr, __value, _index+1);
 	}
 	static append = function(_str) {
 		__value += dunder.as_string(_str);	

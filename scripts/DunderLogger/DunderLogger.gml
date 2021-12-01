@@ -46,10 +46,10 @@ function DunderLogger() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 			var _datetime = dunder.init(DunderDateTime);
 			var _struct = {
 				logName: name,
-				times: _datetime.__string__(),
+				times: _datetime.as_string(),
 				severity: string_upper(_level),
 				message: string(_message),
-				extras: _combined.__struct__(),
+				extras: _combined.as_struct(),
 			}
 			delete _datetime;
 			if (not is_undefined(_stacktrace)) {
@@ -59,7 +59,7 @@ function DunderLogger() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 		}
 		else {
 			var _combined_str = dunder.reduce(_combined, "", function(_prev, _value, _key) {
-				return _prev + _key + "=" + string(_value) + " ";
+				return _prev + _key + "=" + dunder.as_string(_value) + " ";
 			});
 		
 			var _datetime = dunder.init(DunderDateTime, undefined, "%Y-%m-%d %H:%M:%S.%f");

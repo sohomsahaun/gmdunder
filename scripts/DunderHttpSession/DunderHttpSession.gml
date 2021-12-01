@@ -1,10 +1,11 @@
 function DunderHttpSession() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(DunderHttpSession);
 	// An HTTP connection session state machine, using SnowState to provide state machine
 	
-	static __init__ = function(_client_socket, _router, _logger) {
+	static __init__ = function(_client_socket, _router, _logger, _catch_errors) {
 	
 		line_buffer = dunder.init(DunderLineBuffer);
 		closed = false;
+		catch_errors = _catch_errors;
 	
 		request = {
 			method: "",
@@ -87,12 +88,17 @@ function DunderHttpSession() : DunderBaseStruct() constructor { REGISTER_SUBTYPE
 				var _header_only = (request.method == "HEAD" or request.method == "OPTIONS")
 				response = dunder.init(DunderHttpResponse, _header_only);
 			
-				try {
-					router.run_handler_for_path(request, response);
+				if (catch_errors) {
+					try {
+						router.run_handler_for_path(request, response);
+					}
+					catch (_err) {
+						logger.exception(_err);
+						response.set_status(500).send_string("Internal error");
+					}
 				}
-				catch (_err) {
-					logger.exception(_err);
-					response.set_status(500).send_string("Internal error");
+				else {
+					router.run_handler_for_path(request, response);
 				}
 			
 				var _buffer = response.get_send_buffer();
@@ -101,6 +107,9 @@ function DunderHttpSession() : DunderBaseStruct() constructor { REGISTER_SUBTYPE
 				
 				logger.info("Sent response", {response_code: response.status_code, size: _size});
 				response.cleanup();
+				if (not is_undefined(request.data)) {
+					buffer_delete(request.data);	
+				}
 				close();
 				fsm.change("finished");
 			}
@@ -111,6 +120,9 @@ function DunderHttpSession() : DunderBaseStruct() constructor { REGISTER_SUBTYPE
 	}
 
 	static __cleanup__ = function() {
+		if (not is_undefined(request.data)) {
+			buffer_delete(request.data);	
+		}
 		line_buffer.cleanup();
 		close();
 	};

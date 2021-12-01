@@ -63,19 +63,21 @@ function DunderDateTime() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Du
 		
 		var _tokens = [];
 		var _len = string_length(format);
-		var _last_pos = 0;
+		var _last_pos = 1;
 		for (var _i=0; _last_pos<_len; _i++) {
-			var _pos = string_pos_ext("%", format, _last_pos);
+			var _pos = string_pos_ext("%", format, _last_pos-1);
 			if (_pos == 0) {
 				break;
 			}
-			if (_last_pos > 0) {
+			if (_pos > 1 and _pos > _last_pos) {
 				array_push(_tokens, string_copy(format, _last_pos, _pos-_last_pos));
 			}
 			array_push(_tokens, string_copy(format, _pos, 2));
 			_last_pos = _pos+2;
 		}
-		array_push(_tokens, string_copy(format, _last_pos, _len-_last_pos+1));
+		if (_last_pos < _len) {
+			array_push(_tokens, string_copy(format, _last_pos, _len-_last_pos));
+		}
 		
 		formatted_time = "";
 		var _len = array_length(_tokens);

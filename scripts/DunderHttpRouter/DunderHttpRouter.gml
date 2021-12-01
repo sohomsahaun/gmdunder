@@ -91,8 +91,13 @@ function DunderHttpRouter() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(
 			// check for exact match
 			var _path = _paths.get(_i);
 			var _before_pos = _pattern.pos("{");
-			if (_before_pos == -1 and _pattern.equals(_path)) {
-				continue;
+			if (_before_pos == -1) { // no { found
+				if (_pattern.equals(_path)) { // exact text match
+					continue;
+				}
+				else { // not a match
+					return false;	
+				}
 			}
 			
 			// Match part before {

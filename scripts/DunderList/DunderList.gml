@@ -126,7 +126,7 @@ function DunderList() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dunder
 			throw dunder.init(DunderExceptionIndexError, "Index "+string(_index)+" out of range (0-"+string(_len-1)+")");
 		}
 		_index = __wrap_index(_index);
-		array_delete(__values, _index+1, 1);
+		array_delete(__values, _index, 1);
 	}
 	static len = __len__;
 	static contains = __contains__;

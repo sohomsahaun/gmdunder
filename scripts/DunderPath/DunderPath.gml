@@ -4,7 +4,7 @@ function DunderPath() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dunder
 	
 	static __init__ = function(_input) {
 		if (dunder.can_array(_input)) {
-			path_parts = dunder.init_list(dunder.as_array(_input))
+			path_parts = dunder.init_list(dunder.as_array(_input), true);
 		}
 		else if (dunder.can_string(_input)) {
 			var _string = dunder.as_string(_input);
@@ -59,27 +59,27 @@ function DunderPath() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dunder
 		return self;
 	}
 	
-	exists = function() {
+	static exists = function() {
 		return is_file() or is_dir();
 	}
 	
-	is_file = function() {
+	static is_file = function() {
 		if (__boolean__()) {
 			return file_exists(__string__());
 		}
 		return false;
 	}
 	
-	is_dir = function() {
+	static is_dir = function() {
 		if (__boolean__()) {
 			return directory_exists(__string__());
 		}
 		return false;
 	}
 	
-	get_parent = function() {
+	static get_parent = function() {
 		// return new Path with parent
-		if (path_parts.__len__() == 0) {
+		if (path_parts.len() == 0) {
 			throw dunder.init(DunderExceptionValueError, "Can't go up in path");
 		}
 		
@@ -88,20 +88,35 @@ function DunderPath() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dunder
 		return _parent;
 	}
 		
-	get_joined = function(_name) {
+	static get_joined = function(_name) {
 		// return new Path with child
 		var _child = __clone__()
 		_child.join(_name);
 		return _child;
 	}
 
-	up = function() {
+	static up = function() {
 		// go up one, in place
-		if (path_parts.__len__() == 0) {
+		if (path_parts.len() == 0) {
 			throw dunder.init(DunderExceptionValueError, "Can't go up in path");
 		}
 		
 		path_parts.pop();
 		return self;
+	}
+	
+	static get_extension = function() {
+		// get the extension
+		if (path_parts.len() == 0) {
+			return "";	
+		}
+		var _name = path_parts.get(-1);
+		var _dot = _name.last_pos(".");
+		
+		if (_dot == 0) {
+			return "";
+		}
+		
+		return _name.delete_(0, _dot+1);
 	}
 }

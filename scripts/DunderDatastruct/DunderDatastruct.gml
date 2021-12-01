@@ -11,7 +11,7 @@ function DunderDataStruct() : DunderBaseStruct() constructor {REGISTER_SUBTYPE(D
 			if (variable_struct_exists(_values, _key)) {
 				var _value = _values[$ _key];
 				if (_field.validate(_value)) {
-					delete _self[$ _key];
+					delete self[$ _key];
 					self[$ _key] = _value;
 				}
 				else {
@@ -31,7 +31,7 @@ function DunderDataStruct() : DunderBaseStruct() constructor {REGISTER_SUBTYPE(D
 	}
 	
 	static field = function(_default_value=undefined, _default_factory=undefined, _validator=undefined) {
-		return init(DunderField, _default_value, _default_factory, _validator);	
+		return dunder.init(DunderField, _default_value, _default_factory, _validator);	
 	}
 	
 	// validator factories
@@ -46,5 +46,20 @@ function DunderDataStruct() : DunderBaseStruct() constructor {REGISTER_SUBTYPE(D
         return method({min_value: _min_value, max_value: _max_value}, function(_value) {
             return is_numeric(_value) and  _value >= min_value and _value <= max_value;
        });
+    }
+    static is_sprite = function() {
+        return function(_value) {
+            return sprite_exists(_value);
+       };
+    }
+    static is_object = function() {
+        return function(_value) {
+            return object_exists(_value);
+       };
+    }
+    static is_script = function() {
+        return function(_value) {
+            return script_exists(_value);
+       };
     }
 }

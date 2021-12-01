@@ -45,6 +45,9 @@ function DunderDict() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dunder
 	}
 	
 	// Representation methods
+	static __string__ = function() {
+		return json_stringify(__values);
+	}
 	static __repr__ = function() {
 		return 	"<dunder '"+instanceof(self)+"' keys="+variable_struct_get_names(__values)+">";
 	}
@@ -67,6 +70,7 @@ function DunderDict() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dunder
 	static as_boolean = __boolean__;
 	static as_array = __array__;
 	static as_struct = __struct__;
+	static as_string = __string__;
 	
 	// Mathematical operators
 	static __add__ = function(_other) {

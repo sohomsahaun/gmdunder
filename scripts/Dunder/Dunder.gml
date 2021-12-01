@@ -1,5 +1,5 @@
 function Dunder() constructor {
-	
+
 	static started = false;
 	if (not started) {
 		started = true;
@@ -179,7 +179,12 @@ function Dunder() constructor {
 		if (is_struct_with_method(_input, "__string__")) {
 			return _input.__string__();
 		}
-		throw init(DunderExceptionTypeError, "Can't coerse type "+typeof(_input)+" to string");
+		try {
+			return string(_input);
+		}
+		catch(_err) {
+			throw init(DunderExceptionTypeError, "Can't coerse type "+typeof(_input)+" to string: " + _err.message);
+		}
 	}
 	
 	static as_boolean = function(_input) {
