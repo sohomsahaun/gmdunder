@@ -6,7 +6,7 @@ function DunderHttpServer() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(
 		socket = undefined;
 		catch_errors = _catch_errors;
 		
-		listener_instance = noone;
+		listener_instance = undefined;
 		clients = dunder.init_dict();
 		
 		if (is_undefined(_logger)) {
@@ -65,8 +65,10 @@ function DunderHttpServer() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(
 	
 	static __cleanup__ = function() {
 		stop();
-		listener_instance.__cleanup__();
-		delete listener_instance;
+		if (not is_undefined(listener_instance)) {
+			listener_instance.__cleanup__();
+			delete listener_instance;
+		}
 	}
 	
 	static start = function() {
@@ -78,7 +80,7 @@ function DunderHttpServer() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(
 			logger.error("Server port not available");
 		}
 		
-		if (listener_instance == noone) {
+		if (is_undefined(listener_instance)) {
 			listener_instance = dunder.create_instance(__obj_dunder_socket_listener, 0, 0, 0, undefined,
 				[undefined, method(self, async_networking_handler)]
 			);	

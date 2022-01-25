@@ -13,7 +13,7 @@ function ast_condition(_node, _ctx, _scope, _depth) {
 		var _ast_node = asset_get_index(_node.trueNode.type)
 		return _ast_node(_node.trueNode, _ctx, _scope, _depth+1);
 	}
-	else if (_node.falseNode ?? false) {
+	else if (is_struct(_node.falseNode)) {
 		var _ast_node = asset_get_index(_node.falseNode.type)
 		return _ast_node(_node.falseNode, _ctx, _scope, _depth+1);
 	}

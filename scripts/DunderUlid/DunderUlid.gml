@@ -1,11 +1,12 @@
 function DunderUlid() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(DunderUlid);
 	// A range of __values
 	static __rng = dunder.init(DunderRngLcg);
-	static __crockford_alphabet = [
+	
+	__crockford_alphabet = [ // this should be static, but not due to HTML5 bug in  IDE v2.3.7.603  Runtime v2.3.7.476
 		"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A",
 		"B", "C", "D", "E", "F", "G", "H", "J", "K", "M", "N",
 		"P", "Q", "R", "S", "T", "V", "W", "X", "Y", "Z"
-	]
+	];
 	
 	static __init__ = function(_input=undefined) {
 		static __prev_unix = undefined;
@@ -120,7 +121,8 @@ function DunderUlid() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dunder
 	
 		return _str;
 	}
-	static __convert_crockford_base32_to_int = function(_string) {	
+	
+	static __convert_crockford_base32_to_int = function(_string) {
 		static __crockford_lookup = undefined;
 		
 		if (is_undefined(__crockford_lookup)) {

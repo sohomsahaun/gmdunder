@@ -2,8 +2,8 @@
   "isDnD": false,
   "isCompatibility": false,
   "parent": {
-    "name": "Extensions",
-    "path": "folders/Frameworks/Dunder/Extensions.yy",
+    "name": "Delayed Execute",
+    "path": "folders/Frameworks/Dunder/Extensions/Delayed Execute.yy",
   },
   "resourceVersion": "1.0",
   "name": "DunderDelayedExecute",

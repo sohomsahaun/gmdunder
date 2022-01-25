@@ -25,8 +25,8 @@
   "properties": [],
   "overriddenProperties": [],
   "parent": {
-    "name": "Extensions",
-    "path": "folders/Frameworks/Dunder/Extensions.yy",
+    "name": "Common",
+    "path": "folders/Frameworks/Dunder/Extensions/Common.yy",
   },
   "resourceVersion": "1.0",
   "name": "__obj_dunder_socket_listener",

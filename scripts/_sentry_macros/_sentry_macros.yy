@@ -2,11 +2,11 @@
   "isDnD": false,
   "isCompatibility": false,
   "parent": {
-    "name": "Room Changer",
-    "path": "folders/Frameworks/Dunder/Extensions/Room Changer.yy",
+    "name": "Sentry",
+    "path": "folders/Frameworks/Sentry.yy",
   },
   "resourceVersion": "1.0",
-  "name": "DunderRoomChanger",
+  "name": "_sentry_macros",
   "tags": [],
   "resourceType": "GMScript",
 }

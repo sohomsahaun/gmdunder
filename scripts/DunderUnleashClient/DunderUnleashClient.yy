@@ -6,7 +6,7 @@
     "path": "folders/Frameworks/Dunder/Extensions.yy",
   },
   "resourceVersion": "1.0",
-  "name": "DunderRng",
+  "name": "DunderUnleashClient",
   "tags": [],
   "resourceType": "GMScript",
 }

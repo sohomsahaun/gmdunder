@@ -1,4 +1,4 @@
-#macro DUNDER_VERSION "v0.9.9"
+#macro DUNDER_VERSION "v1.0.0"
 
 // This is the name of the global var used to facilitate init room injection
 #macro DUNDER_FIRST_ROOM_GLOBAL "__dunder_first_room_callback__"

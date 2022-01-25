@@ -1,13 +1,19 @@
 function DunderBaseStruct() constructor {
+	static __bases__ = undefined;
 	// Base struct for all Dunder structs to inherit from
 	static __super_method_lookup__ = {}
 	
 	// Tracks inheritence
-	static __bases__ = [DunderBaseStruct]
 	static __bases_add__ = function(_constructor) {
 		// Constructs the inheritance array __bases__
-		var _new_base = [_constructor]
-		array_copy(_new_base, 1, __bases__, 0, array_length(__bases__));
+		
+		if (is_undefined(__bases__)) { // This is a workaround for HTML5 export on IDE v2.3.7.603  Runtime v2.3.6.464
+			var _new_base = [_constructor, DunderBaseStruct];
+		}
+		else {
+			var _new_base = [_constructor];
+			array_copy(_new_base, 1, __bases__, 0, array_length(__bases__));
+		}
 		__super_method_lookup__[$ _constructor] = {
 			__init__:__init__,
 			__cleanup__:__cleanup__,

@@ -2,11 +2,11 @@
   "isDnD": false,
   "isCompatibility": false,
   "parent": {
-    "name": "Room Changer",
-    "path": "folders/Frameworks/Dunder/Extensions/Room Changer.yy",
+    "name": "Extensions",
+    "path": "folders/Frameworks/Dunder/Extensions.yy",
   },
   "resourceVersion": "1.0",
-  "name": "DunderRoomChanger",
+  "name": "DunderHttpClient",
   "tags": [],
   "resourceType": "GMScript",
 }

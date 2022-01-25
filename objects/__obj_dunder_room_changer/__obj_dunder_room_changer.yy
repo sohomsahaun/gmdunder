@@ -24,8 +24,8 @@
   "properties": [],
   "overriddenProperties": [],
   "parent": {
-    "name": "Extensions",
-    "path": "folders/Frameworks/Dunder/Extensions.yy",
+    "name": "Room Changer",
+    "path": "folders/Frameworks/Dunder/Extensions/Room Changer.yy",
   },
   "resourceVersion": "1.0",
   "name": "__obj_dunder_room_changer",

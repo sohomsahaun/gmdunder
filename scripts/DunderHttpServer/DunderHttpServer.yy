@@ -2,8 +2,8 @@
   "isDnD": false,
   "isCompatibility": false,
   "parent": {
-    "name": "HTTP",
-    "path": "folders/Frameworks/Dunder/Extensions/HTTP.yy",
+    "name": "HTTP Server",
+    "path": "folders/Frameworks/Dunder/Extensions/HTTP Server.yy",
   },
   "resourceVersion": "1.0",
   "name": "DunderHttpServer",

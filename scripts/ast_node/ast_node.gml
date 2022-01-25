@@ -1,7 +1,9 @@
 function ast_node(_node, _ctx, _scope, _depth) {
 	
-	var _children_value = _node[$ "children"];
-	var _children = _children_value ?? [];
+	var _children = _node[$ "children"];
+	if (is_undefined(_children) or is_ptr(_children)) {
+		_children = [];
+	}
 	var _len = array_length(_children);
 
 	if (not is_undefined(_ctx.logger)) {

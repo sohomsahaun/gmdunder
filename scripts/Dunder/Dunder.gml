@@ -47,7 +47,7 @@ function Dunder() constructor {
 		// certain room-related things until actually inside the room
 		if (is_method(_first_room_callback)) {
 			get_shared_logger().info("Registering function to run on game start");
-			room_instance_add(room_first, 0, 0, __obj_dunder_init_room);	
+			room_instance_add(room_first, 0, 0, __obj_dunder_init_room);
 			variable_global_set(DUNDER_FIRST_ROOM_GLOBAL, _first_room_callback);
 		}
 		

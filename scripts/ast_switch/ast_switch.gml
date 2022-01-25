@@ -29,7 +29,7 @@ function ast_switch(_node, _ctx, _scope, _depth) {
 				_jump_index = _i;
 				break;
 			}
-			if (_child.label ?? false) {
+			if (not is_undefined(_child.label) and not is_ptr(_child.label)) {
 				_default_index = _i;	
 			}
 		}

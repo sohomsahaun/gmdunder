@@ -16,7 +16,7 @@ function DunderSocket() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 		__connected = false;
 		__disconnected_time = 0;
 		__should_be_connected = false
-		__listener_instance = noone;
+		__listener_instance = undefined;
 		
 		if (is_undefined(_logger)) {
 			logger = dunder.bind_named_logger("Socket", {host:host, port:port})
@@ -28,8 +28,10 @@ function DunderSocket() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 	
 	static __cleanup__ = function() {
 		disconnect();
-		__listener_instance.__cleanup__();
-		delete __listener_instance;
+		if (not is_undefined(_listener_instance)) {
+			__listener_instance.__cleanup__();
+			delete __listener_instance;
+		}
 	}
 	static cleanup = __cleanup__;
 	
@@ -68,7 +70,7 @@ function DunderSocket() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 			logger.error("Could not create socket, not available");
 		}
 		
-		if (__listener_instance == noone) {
+		if (is_undefined(__listener_instance)) {
 			__listener_instance = dunder.create_instance(__obj_dunder_socket_listener, 0, 0, 0, undefined,
 				[method(self, __step_handler), method(self, __async_networking_handler)]
 			);

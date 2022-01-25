@@ -1,7 +1,7 @@
 function BTree(_compare=undefined, _degrees=3) constructor {
 	root = undefined;
 	degrees = _degrees;
-	compare = _compare ?? function(_a, _b) { return sign(_a - _b); };
+	compare = is_undefined(_compare) ? function(_a, _b) { return sign(_a - _b); } : _compare;
 	
 	static clear = function() {
 		root = undefined;	

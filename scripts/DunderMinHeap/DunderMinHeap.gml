@@ -31,6 +31,7 @@ function DunderMinHeap() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dun
 	static __len__ = function() {
 		return array_length(__values);
 	}
+	static len = __len__;
 	
 	// Iteration methods
 	static __iter__ = function() {
@@ -81,9 +82,13 @@ function DunderMinHeap() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dun
 	}
 	
 	static __shift_up = function(_idx) {
-		while(_idx > 0 and __values[__parent(_idx)][1] > __values[_idx][1]) {
-			__swap(__parent(_idx), _idx);
-			_idx = __parent(_idx);
+		while(_idx > 0) {
+			var _parent_idx = __parent(_idx);
+			if (__values[_parent_idx][1] > __values[_idx][1]) {
+				break;	
+			}
+			__swap(_parent_idx, _idx);
+			_idx = _parent_idx;
 		}
 	}
 	

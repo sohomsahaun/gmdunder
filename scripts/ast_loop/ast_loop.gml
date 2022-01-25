@@ -5,7 +5,7 @@ function ast_loop(_node, _ctx, _scope, _depth) {
 	}
 	
 	// Initialize
-	if (_node.init ?? false) {
+	if (is_struct(_node.init)) {
 		var _ast_node = asset_get_index(_node.init.type)
 		_ast_node(_node.init, _ctx, _scope, _depth+1);
 	}
@@ -30,7 +30,7 @@ function ast_loop(_node, _ctx, _scope, _depth) {
 			return;	
 		}
 
-		if (_node.post ?? false) {
+		if (is_struct(_node.post)) {
 			var _ast_node = asset_get_index(_node.post.type)
 			_ast_node(_node.post, _ctx, _scope, _depth+1);
 		}

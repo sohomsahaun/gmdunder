@@ -4,7 +4,7 @@ function DunderDateTime() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Du
 		static offset_datetime = undefined;
 		static offset_timer = undefined;
 		
-		timezone = _timezone ?? date_get_timezone();
+		timezone = _timezone;
 		
 		if (is_undefined(_input)) {
 			var _list_timezone = date_get_timezone();
