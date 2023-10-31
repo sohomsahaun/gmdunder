@@ -154,9 +154,9 @@ function DunderString() : DunderBaseStruct() constructor { REGISTER_SUBTYPE(Dund
 	static lettersdigits = function() { return __clone__(string_lettersdigits(__value)); }
 	static lower = function() { return __clone__(string_lower(__value)); }
 	static pos = function(_substr) { return string_pos(_substr, __value)-1; }
-	static pos_ext = function(_substr, _start_pos) { return string_pos_ext(_substr, __value, _start_pos)-1; }
+	static pos_ext = function(_substr, _start_pos) { return string_pos_ext(_substr, __value, _start_pos+1)-1; }
 	static last_pos = function(_substr) { return string_last_pos(_substr, __value)-1; }
-	static last_pos_ext = function(_substr, _start_pos) { return string_last_pos_ext(_substr, __value, _start_pos)-1; }
+	static last_pos_ext = function(_substr, _start_pos) { return string_last_pos_ext(_substr, __value, _start_pos+1)-1; }
 	static repeat_ = function(_count) { return __clone__(string_repeat(__value, _count)); }
 	static replace = function(_substr, _newstr) { return __clone__(string_replace(__value, _substr, _newstr)); }
 	static replace_all = function(_substr, _newstr) { return __clone__(string_replace_all(__value, _substr, _newstr)); }
